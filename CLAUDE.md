@@ -41,7 +41,11 @@ biweekly meeting):
 - **Live:** Casa La Fonte host agent and marketing push (Tuscan farmhouse)
 - **Live:** Longevity Ledger (personal longevity protocol)
 - **Starting November 2026:** AI-expert road map (the long-term horizon above)
-  and the agent-driven side business (longevity/health niche). The side
+  and the agent-driven side business. Its focus is **not settled**:
+  longevity/health was a first idea, and Daniel wants an open brainstorming
+  session (Career & Offers Crew, Product & Housing Strategist, AI Tutor, Red
+  Team) before choosing — schedule it when the council's November capacity
+  allows, after the AI-expert road map is scoped. The side
   business must be set up so it does not conflict with Daniel's current
   employment: outside his employer's field, no employer time, devices,
   information or contacts, and checked against his employment agreement's
