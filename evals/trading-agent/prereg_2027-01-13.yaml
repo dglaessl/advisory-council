@@ -1,0 +1,21 @@
+# Pre-registration for the 2027-01-13 trading-agent review. Written 2026-10-28 by the Evaluator, BEFORE the data exist.
+# Do not edit after 2026-10-28 except by a dated amendment appended at the bottom.
+benchmarks:
+  B1: hold-BTC, frictionless (existing journal benchmark; keep for continuity)
+  B2: hold-BTC with the same 0.93% buy spread on cash deposits (like-for-like)
+  B3: passive twin = owner's in-kind ETH/XRP held as-is + each cash deposit 50% BTC core / 50% idle cash, no trading
+  B4: shadow backtest = backtest/backtest.py with live parameters, run to 2027-01-13 on the same candles (implementation fidelity)
+primary_metric: trading-side P&L = trading equity - net trading capital in (this equals B3 minus actual); report in $ and %
+secondary_metrics: [equity vs B1/B2/B3, max drawdown total and trading-side, spread+slippage paid in $, fills vs mark (n, mean %),
+  signals seen (brk=Y) vs signals taken, closed trades with R-multiples, stop-order health, process errors count]
+minimum_sample_to_judge_strategy_alpha: 30 closed breakout trades (hard floor); 200+ for a 0.3R edge. Not reachable by 2027-01-13.
+decision_rule:
+  safety_override (any time): ledger/benchmark mis-booking >$5 not caught within 1 cycle, or a stop not in place on a trading lot -> fix ops, do not wait for review
+  keep_unchanged_if: [trading-side P&L >= -5% of trading capital, total drawdown < 20%, zero unresolved process errors,
+    signals taken == signals qualifying under the written rules, mean fill premium <= 1.1%]
+  change_if_any: [signals qualifying but not taken >= 2 (execution fault), fill premium > 1.2% mean over >=10 fills,
+    trading-side P&L < -10% of trading capital with >=5 closed trades, shadow backtest (B4) diverges from live by >3 pts of trading capital unexplained]
+  stop_trading_if_any: [total drawdown from peak >= 25% attributable to trading side, 2+ process errors that misplace money,
+    stop order failed to execute within 5% of trigger]
+  explicit_non_rule: never conclude the strategy "works" or "fails" from < 30 trades; lack of trades is not evidence of failure
+  owner_review_trigger_existing: equity trails B1 by >5% (CLAUDE.md) -- with zero skill expect noise alone to reach this roughly 5-10% of the time over 3 months (assumed 3.2% tracking sd) (see power.py), so treat as a prompt for diagnosis, not a verdict

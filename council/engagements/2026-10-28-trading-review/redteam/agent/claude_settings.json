@@ -1,0 +1,38 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Robinhood_Connector__get_accounts",
+      "mcp__Robinhood_Connector__get_portfolio",
+      "mcp__Robinhood_Connector__get_crypto_positions",
+      "mcp__Robinhood_Connector__get_crypto_orders",
+      "mcp__Robinhood_Connector__get_crypto_quotes",
+      "mcp__Robinhood_Connector__get_currency_pairs",
+      "mcp__Robinhood_Connector__preview_crypto_order",
+      "mcp__Robinhood_Connector__place_crypto_order",
+      "mcp__Robinhood_Connector__cancel_crypto_order",
+      "Read(./**)",
+      "Edit(./journal.md)",
+      "Write(./journal.md)",
+      "Write(./state/**)",
+      "Bash(./bin/fetch-candles.sh:*)",
+      "Bash(python3 bin/analyze.py:*)",
+      "Bash(python3 bin/calc.py:*)",
+      "Bash(./bin/build-dashboard.sh)",
+      "Bash(git pull:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push)",
+      "Bash(git status:*)",
+      "Bash(ls:*)",
+      "Bash(date:*)"
+    ],
+    "deny": [
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Edit(./CLAUDE.md)",
+      "Write(./CLAUDE.md)",
+      "Edit(./cloud/**)",
+      "Write(./cloud/**)"
+    ]
+  }
+}
