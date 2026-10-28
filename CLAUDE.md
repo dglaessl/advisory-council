@@ -41,11 +41,18 @@ biweekly meeting):
 - **Live:** Casa La Fonte host agent and marketing push (Tuscan farmhouse)
 - **Live:** Longevity Ledger (personal longevity protocol)
 - **Starting November 2026:** AI-expert road map (the long-term horizon above)
-  and the agent-driven side business (longevity/health niche)
-- **Starting in the coming weeks:** Daniel's new real estate business. Before
-  any substantive work, the Product & Housing Strategist runs a conflict check
-  against his current employment (outside-business, IP, non-compete and
-  confidentiality terms), and no employer-confidential material is used.
+  and the agent-driven side business (longevity/health niche). The side
+  business must be set up so it does not conflict with Daniel's current
+  employment: outside his employer's field, no employer time, devices,
+  information or contacts, and checked against his employment agreement's
+  outside-activity and IP-assignment terms before launch.
+- **Starting in the coming weeks:** Daniel's new real estate business — for
+  now **business plan and strategy development only**. Daniel will leave his
+  current employment before fully engaging. Until then the council works only
+  on planning: public information and Daniel's own knowledge, on personal time
+  and systems, no employer-confidential material, no outreach to the
+  employer's customers, partners or staff, and nothing operational (no
+  entity-forming, fundraising, deals or hiring) without Daniel's explicit go.
 - Product strategy frameworks related to Daniel's work in housing
 - The council itself (its prompts, evals and infrastructure)
 
