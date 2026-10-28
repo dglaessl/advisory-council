@@ -82,7 +82,7 @@ index 1d11384..089c336 100644
 +checks below.
  
  - **Robinhood:** use the Robinhood connector's tools. Trade only the agentic account ending 2149
-   (account_number / rhs_account_number 482882149).
+   (account_number / rhs_account_number <ACCT>).
 @@ -27,12 +43,46 @@ Follow the "Trading cycle" section of CLAUDE.md. Notes for this environment:
    `python3 bin/calc.py "0.00966963*83016.68" "(1982.70-1991.92)/1991.92"`.
    No `cd`, loops, shell variables, pipes or `&&` around it.
