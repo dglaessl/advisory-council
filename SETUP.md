@@ -47,17 +47,24 @@ docs**; this runbook gives the order and the security settings.
 - [ ] Run the bridge tests: `python3 -m unittest discover -s bridge/tests`
 
 ## 3. Hermes — Chief of Staff
-- [ ] Install Hermes per the official docs (github.com/NousResearch/hermes-agent).
-- [ ] Copy `external/hermes/SOUL.md` to Hermes' global SOUL.md.
-- [ ] Copy `external/hermes/skills/council-inbox/` into Hermes' skills folder.
-- [ ] Set `COUNCIL_ROOT` to the repo path in Hermes' environment.
-- [ ] Connect the Telegram gateway and restrict it to **your** Telegram
-      account only.
+Runs in Docker (official image `nousresearch/hermes-agent`), data in
+`~/council/hermes-data` (mounted at `/opt/data`), the same sanitized
+read-only snapshot as Agent Zero at `/council`. **No mailbox access in
+Phase 1** (decision log 2026-10-28).
+- [ ] Separate OpenRouter key for Hermes with its own low monthly limit.
+- [ ] Telegram bot from @BotFather; your numeric user ID from @userinfobot.
+- [ ] `external/hermes/SOUL.md` → `~/council/hermes-data/SOUL.md`;
+      `external/hermes/skills/council-inbox/` → `~/council/hermes-data/skills/`.
+- [ ] Setup wizard (interactive):
+      `docker run -it --rm -v ~/council/hermes-data:/opt/data nousresearch/hermes-agent setup`
+- [ ] In `~/council/hermes-data/.env`: `TELEGRAM_ALLOWED_USERS=<your ID only>`.
+- [ ] Gateway, localhost-only API, read-only snapshot:
+      `docker run -d --name hermes --restart unless-stopped -v ~/council/hermes-data:/opt/data -v ~/council/repo-snapshot:/council:ro -p 127.0.0.1:8642:8642 nousresearch/hermes-agent gateway run`
 - [ ] Keep Hermes' approval prompts on for commands with side effects.
-- [ ] Add scheduled jobs: council inbox check (hourly), weekly digest
-      (Monday), revisit reminders (daily scan of `council/decision-log/`).
-- [ ] Check: send a test task (step 5) addressed to `chief-of-staff`;
-      Hermes claims it and replies.
+- [ ] Scheduled jobs (ask Hermes on Telegram): daily revisit-date check,
+      Monday weekly digest.
+- [ ] Check: message the bot "Which council decisions are awaiting my
+      approval?" — it should name the 2026-10-28 Red Team review.
 
 ## 4. Agent Zero — Red Team & Lab
 - [ ] Run Agent Zero in Docker per its official README.
