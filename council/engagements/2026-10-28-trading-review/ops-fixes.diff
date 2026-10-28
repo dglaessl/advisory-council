@@ -1,0 +1,247 @@
+diff --git a/.claude/settings.json b/.claude/settings.json
+index 0e27f91..88b9a37 100644
+--- a/.claude/settings.json
++++ b/.claude/settings.json
+@@ -24,7 +24,10 @@
+       "Bash(git push)",
+       "Bash(git status:*)",
+       "Bash(ls:*)",
+-      "Bash(date:*)"
++      "Bash(date:*)",
++      "Bash(git merge --abort)",
++      "Bash(git rebase --abort)",
++      "Bash(git checkout main)"
+     ],
+     "deny": [
+       "Bash(git push --force:*)",
+diff --git a/README.md b/README.md
+index 66eb9d1..6408fa0 100644
+--- a/README.md
++++ b/README.md
+@@ -11,7 +11,16 @@ schedule in the cloud.
+ - `migration/`: how the agent moved here from a Mac (`HANDOVER.md`) and the cut-over script.
+ - `legacy-mac/`: the old Mac scripts and schedules, for reference only.
+ 
+-**Stop the agent:** add an empty file named `STOP` at the top of the repository and commit it.
+-Every run then halts before trading. Delete the file to resume.
++**Owner controls** (add the file at the top of the repository and commit it; delete it to undo):
++
++| Level | How | Effect |
++|---|---|---|
++| Pause buying | file `NO_NEW_ENTRIES` | No buys at all (not even core BTC). Stops, trims and exits still run. |
++| Stop the agent | file `STOP` | The agent places and cancels no orders. Stop orders already at Robinhood stay active and can still fill. |
++| Full kill | disable both scheduled tasks ("daily cycle" and "check"), then remove the Robinhood connector's agentic access in the Robinhood app | Nothing runs. Decide separately whether to sell the trading lots (core coins stay). |
++| Clear a stuck run | edit `state/run.lock` to start with `free` | Only after confirming no cycle is running (the check reports a lock older than 3 hours). |
++
++Only the daily cycle trades. The 2-hourly check is a read-only watchdog: it alerts on a missed
++cycle, a stuck run lock, a missing stop or an owner note, and never starts a cycle (2026-10-28).
+ 
+ Keep this repository **private**: it contains account numbers, balances and trades.
+diff --git a/cloud/CYCLE.md b/cloud/CYCLE.md
+index 1d11384..089c336 100644
+--- a/cloud/CYCLE.md
++++ b/cloud/CYCLE.md
+@@ -1,7 +1,8 @@
+ # Running one trading cycle in the cloud
+ 
+-This file replaces the Mac's `bin/run-cycle.sh` (see `legacy-mac/`). A cloud routine runs it
+-either on its daily schedule or from `cloud/CHECK.md` when new funds or coins arrive.
++This file replaces the Mac's `bin/run-cycle.sh` (see `legacy-mac/`). A cloud routine runs it once
++a day at 00:20 UTC. The owner may also start one manually. `cloud/CHECK.md` is a read-only
++watchdog and never starts a cycle (owner decision 2026-10-28).
+ 
+ The repository is the agent's memory: every run starts from a fresh copy and must push its changes
+ back, or the next run won't know what happened.
+@@ -10,12 +11,27 @@ back, or the next run won't know what happened.
+ 
+ 1. `git pull` so you have the latest journal.
+ 2. If a file named `STOP` exists at the repository root, place no orders. Update `- Last cycle:`
+-   in journal.md, add a cycle entry saying "halted by STOP", commit, push and end.
+-3. Read `CLAUDE.md` (the rules) and `journal.md` (state, notes, cycle log) in full.
++   in journal.md, add a cycle entry saying "halted by STOP", commit, push and end. (Stop orders
++   already resting at Robinhood stay active; STOP only stops this agent from placing or
++   cancelling orders.)
++3. **Take the run lock.** Read `state/run.lock` (it may be missing).
++   - If it starts with `held`, another cycle is running or one crashed. Place no orders, change no
++     files, and end with `ACTION NEEDED: run lock held (<its contents>); not trading`. Never take
++     over or clear someone else's lock. The owner clears a stale lock.
++   - Otherwise create a run ID with `date -u +%Y%m%dT%H%M%S-%N`, write `state/run.lock` as one line
++     `held <RUN_ID> <UTC time>`, commit only that file (`lock <RUN_ID>`) and `git push`.
++   - If that push is rejected, run `git pull`. If `state/run.lock` now shows your RUN_ID, push once
++     more; if it shows anything else, or the pull reports a conflict, place no orders and end with
++     `ACTION NEEDED: lost the run-lock race; not trading` (run `git merge --abort` or
++     `git rebase --abort` first if a merge or rebase is in progress).
++4. Read `CLAUDE.md` (the rules) and `journal.md` (state, notes, cycle log) in full.
++5. If a file named `NO_NEW_ENTRIES` exists at the repository root: this cycle may manage exits
++   (stops, trims, breakdowns) but must not buy anything, including core BTC. Say so in the cycle log.
+ 
+ ## The cycle
+ 
+-Follow the "Trading cycle" section of CLAUDE.md. Notes for this environment:
++Follow the "Trading cycle" section of CLAUDE.md, with these environment notes and the three
++checks below.
+ 
+ - **Robinhood:** use the Robinhood connector's tools. Trade only the agentic account ending 2149
+   (account_number / rhs_account_number 482882149).
+@@ -27,12 +43,46 @@ Follow the "Trading cycle" section of CLAUDE.md. Notes for this environment:
+   `python3 bin/calc.py "0.00966963*83016.68" "(1982.70-1991.92)/1991.92"`.
+   No `cd`, loops, shell variables, pipes or `&&` around it.
+ - **Journal:** update journal.md with the Edit or Write tool. Always update the `- Last cycle:` line
+-  in State, even on a halt or when nothing happens, and keep the `Cash: $` figure exact: the
+-  deposit check compares Robinhood's buying power with it.
++  in State, even on a halt or when nothing happens, and keep the `Cash: $` figure exact.
++
++### Check A: reconcile cash before calling anything a deposit (step 2 of the CLAUDE.md cycle)
++This replaces judging deposits by eye (a stop fill was booked as a deposit on 2026-10-24).
++1. Call `get_crypto_orders` with `updated_at_gte` = the journal's `- Last cycle:` time (as UTC,
++   ending in `Z`). Take every order with filled quantity since then, including stop orders.
++2. With `bin/calc.py`: expected cash = journal `Cash: $` + the executed notional of filled sells
++   − the executed notional of filled buys. Difference = `crypto_buying_power.buying_power` −
++   expected cash.
++3. Classify the difference:
++   - between −$1 and +$1: no deposit.
++   - between +$199 and +$201: the routine weekly $200 deposit. Log it and buy core BTC as CLAUDE.md
++     says.
++   - anything else (any other increase, or any decrease): **do not** call it a deposit and **do
++     not** buy core BTC. Add `## OWNER ACTION NEEDED` at the top of the journal with the numbers
++     (journal cash, fills, buying power, difference) and make no new entries this cycle. Exits
++     still run. The owner confirms in the journal, and the next cycle books it.
++4. Write the reconciliation in the cycle log: `Cash check: journal $X + sells $Y − buys $Z =
++   expected $E; buying power $B; difference $D → <classification>`.
++
++### Check B: verify every stop with the broker (before deciding trades)
++1. Call `get_crypto_orders` with `state_group` = `open`.
++2. For every trading position in the journal's State, there must be open stop orders whose total
++   quantity equals the trading lot and whose `stop_price` equals the journal's stop. List the order
++   IDs in the journal.
++3. If a stop is missing and the coin's lot is still held: place the stop again (same trigger and
++   quantity) and confirm it. If quantities or triggers don't match: don't guess. Add `## OWNER
++   ACTION NEEDED` with the details and make no new entries this cycle.
++4. Renewal: any open stop whose `created_at` is more than 80 days ago is renewed with the same
++   trigger and quantity, using the "Moving a stop" procedure in CLAUDE.md (cancel, place
++   immediately, confirm both). Stops placed 2026-10-17 are renewed from 2027-01-05.
++5. Never place, move or cancel a stop on core coins.
++
++### Check C: log the signals
++In every cycle log entry add `- Signals: brk=Y: <coins or none>; taken: <coins or none>; skipped:
++<coin: reason>`. This lets the 2027-01-13 review measure the strategy, not just the trades.
+ 
+ ## After the cycle
+ 
+-1. Save the holdings snapshot used by the deposit check: write `state/holdings.txt` with one line
++1. Save the holdings snapshot used by the watchdog: write `state/holdings.txt` with one line
+    per coin, `<CODE> <quantity>`, sorted by code, exactly as get_crypto_positions reports
+    `quantity` (for example `BTC 0.01110445`). Leave out coins with quantity 0.
+ 2. Rebuild the dashboard: `./bin/build-dashboard.sh`, then publish `dashboard/dashboard.html` to the
+@@ -40,10 +90,14 @@ Follow the "Trading cycle" section of CLAUDE.md. Notes for this environment:
+    with that url and file_path, omitting icon and capabilities; if refused because the live version
+    differs, publish the same file again, at most 3 times). If the Artifact tool isn't available in
+    this run, skip this step and say so in your final message. Never let it block the cycle.
+-3. Commit journal.md and state/ with a message like `cycle 2026-10-23 00:20 UTC: no trades` or
+-   `cycle …: BUY BTC $100 (core)`, and push. If the push is rejected, `git pull --rebase` and push
+-   again. Never force-push.
+-4. End with a 2-4 line summary: equity, trades made, anything the owner should know. Start the
++3. **Release the run lock:** write `state/run.lock` as `free <RUN_ID> <UTC time>`.
++4. Commit journal.md and state/ (including the released lock) with a message like
++   `cycle 2026-10-23 00:20 UTC: no trades` or `cycle …: BUY BTC $100 (core)`, and push. If the push
++   is rejected, `git pull --rebase` and push again. If the rebase reports a conflict, run
++   `git rebase --abort`, place no further orders, and end with `ACTION NEEDED: push failed after
++   trading; journal not saved` plus the trades made, so the owner can repair the journal. Never
++   force-push.
++5. End with a 2-4 line summary: equity, trades made, anything the owner should know. Start the
+    first line with `ACTION NEEDED:` if the journal has an `## OWNER ACTION NEEDED` or
+    `## OWNER REVIEW NEEDED` note, or if anything failed.
+ 
+@@ -53,3 +107,4 @@ Follow the "Trading cycle" section of CLAUDE.md. Notes for this environment:
+ - Never move money, change Robinhood settings, or touch the owner's other account (••••3559).
+ - Never edit CLAUDE.md or the files in `cloud/`. Those are the owner's.
+ - Don't change the routines or their schedules.
++- Never clear or take over a run lock that isn't yours.
+commit 0c9437093a5a02328ef9a8ccf3df03ea1903fa36
+Author: Daniel Glaessl <dglaessl@gmail.com>
+Date:   Wed Oct 28 06:57:35 2026 -0500
+
+    Owner: make the 2-hourly check a read-only watchdog (council review 2026-10-28)
+    
+    The check no longer starts trading cycles or commits anything. Only the
+    daily cycle trades, so trading runs cannot overlap. Alerts: missed cycle,
+    stuck run lock, missing stop, owner notes, unexpected holdings drop.
+    
+    Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+    Claude-Session: https://claude.ai/code/session_01FweFU6eXAzDofJfHb6Tvhc
+
+diff --git a/cloud/CHECK.md b/cloud/CHECK.md
+index 7bc8e7d..dca5738 100644
+--- a/cloud/CHECK.md
++++ b/cloud/CHECK.md
+@@ -1,29 +1,44 @@
+-# Regular check: deposits, transfers and a missed daily cycle
++# Regular check (read-only watchdog)
+ 
+-This file replaces the Mac's `bin/check-deposit.sh` and `bin/daily-gate.sh` (see `legacy-mac/`).
+-A cloud routine runs it every 2 hours. Most runs find nothing and end in under a minute, without
+-committing anything.
++A cloud routine runs this every 2 hours. **This check never trades and never starts a trading
++cycle.** Only the daily cycle (`cloud/CYCLE.md`, 00:20 UTC) places orders, so two trading runs can
++never overlap. New deposits and coin transfers are handled by the next daily cycle. (Changed
++2026-10-28 by the owner after the advisory council review; see "Why" at the end.)
+ 
+-1. `git pull`. If a file named `STOP` exists at the repository root, end without doing anything.
+-2. Read the State section of journal.md: the `- Last cycle:` time and the `Cash: $` figure.
+-   Read `state/holdings.txt` (one `<CODE> <quantity>` per line) and `state/last-deposit-trigger.txt`
+-   (an ISO UTC time, or missing).
+-3. With the Robinhood connector (account ending 2149, read-only calls only), get
+-   `get_portfolio` → `crypto_buying_power.buying_power`, and `get_crypto_positions` → each coin's
+-   `quantity`. If either call fails, end with `CHECK FAILED: <error>`. Don't retry and don't trade.
+-4. Decide, using `python3 bin/calc.py` for the comparisons:
+-   - **New cash:** buying power is more than $5 above the journal's `Cash: $`, and the last
+-     deposit trigger was more than 3 hours ago (or there is none).
+-   - **Coin transfer in:** any coin's quantity is above its value in `state/holdings.txt` by more
+-     than 0.1%, or a coin appears that isn't in the file. No cooldown.
+-   - **Missed daily cycle:** the time is past 00:20 UTC and `- Last cycle:` is earlier than today's
+-     00:00 UTC (the daily cycle hasn't run since the last daily candle closed).
+-5. If none applies: update `state/holdings.txt` to the current quantities. Commit and push only if
+-   the file changed. End with `CHECK OK: nothing new`.
+-6. If one or more applies: write the current time to `state/last-deposit-trigger.txt` (only when
+-   new cash triggered), then run one full trading cycle exactly as `cloud/CYCLE.md` describes. Give
+-   it the trigger as the reason, for example `new funds detected (buying power $534.74 vs journal
+-   cash $334.74)`, `coin transfer detected (ETH +0.25)` or `daily cycle catch-up`. The cycle commits
+-   and pushes everything.
++The check makes **no commits and no pushes**, and calls only these read-only Robinhood tools on
++the account ending 2149: `get_portfolio`, `get_crypto_positions`, `get_crypto_orders`. Never call
++`place_crypto_order`, `cancel_crypto_order` or `preview_crypto_order` here.
+ 
+-The same hard limits as in `cloud/CYCLE.md` apply.
++1. `git pull`. If a file named `STOP` exists at the repository root, end with
++   `CHECK OK: STOP file present, agent halted by the owner`.
++2. Read from journal.md: the `- Last cycle:` time, the `Cash: $` figure, every position's stop
++   order ID(s) in State, and whether the file contains `## OWNER ACTION NEEDED` or
++   `## OWNER REVIEW NEEDED`. Read `state/holdings.txt` and `state/run.lock` (may be missing).
++3. Get `get_portfolio` → `crypto_buying_power.buying_power`, `get_crypto_positions` → each coin's
++   `quantity`, and `get_crypto_orders` with `state_group` = `open`. If a call fails, end with
++   `ALERT: CHECK FAILED: <tool> <error>`. Don't retry.
++4. Using `python3 bin/calc.py` for any arithmetic, collect **alerts** (problems for the owner):
++   - **Missed daily cycle:** `- Last cycle:` is more than 25 hours ago.
++   - **Stuck run lock:** `state/run.lock` starts with `held` and its time is more than 3 hours ago.
++   - **Missing stop:** a stop order ID listed in the journal's State is not among the open orders,
++     and no position quantity explains it (if the coin's trading lot is gone from the holdings, the
++     stop probably filled: say "stop probably filled: <COIN>").
++   - **Owner note:** journal.md contains `## OWNER ACTION NEEDED` or `## OWNER REVIEW NEEDED`.
++   - **Unexpected holdings drop:** a coin's quantity is more than 0.1% below `state/holdings.txt`
++     with no explanation from a filled stop (core coins must never decrease).
++   And **notes** (normal events, no action needed):
++   - **New cash:** buying power more than $5 above the journal's `Cash: $` (deposit or sale; the
++     next daily cycle reconciles it).
++   - **Coin transfer in:** a coin's quantity more than 0.1% above `state/holdings.txt`, or a new coin.
++5. End with exactly one of:
++   - `ALERT: <alert>; <alert> …` (first line), then any notes on the next line, or
++   - `CHECK OK: <notes, or "nothing new">`.
++
++Do not write, commit or push any file. Do not run a trading cycle, even for a missed day: the
++owner decides whether to run one manually.
++
++## Why (owner decision 2026-10-28)
++Before this change the check started full trading cycles on new cash, coin transfers or a missed
++day. Nothing prevented that from overlapping with the daily cycle (two cloud cycles ran 13 minutes
++apart on 2026-10-22), and a stop fill was once mistaken for a deposit (2026-10-24). A weekly deposit
++waiting up to 24 hours for the daily cycle costs nothing; overlapping trading runs could.
