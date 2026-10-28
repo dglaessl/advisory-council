@@ -66,13 +66,29 @@ docs**; this runbook gives the order and the security settings.
       `external/agent-zero/red-team-system-prompt.md`.
 - [ ] Set its model to a **non-Anthropic** model (frontier or strong
       open-weight). Gemini 4 can be swapped in later as a one-line change.
-- [ ] Mount a **read-only** copy of the repo; give it no other volumes and
-      no secrets except its own model key.
+- [ ] Mount a **sanitized, read-only snapshot** of the repo (e.g.
+      `~/council/repo-snapshot` → `/council:ro`) made with `git archive`:
+      tracked files only, so no `.env`, mailboxes or other seats' replies.
+      Give it no other volumes and no secrets except its own model key.
+- [ ] Keep every `.env` / secret **outside** any folder that is mounted into
+      an agent container.
 - [ ] Limit outbound network to the model API if you can (egress firewall
       or proxy). Agent Zero has root inside its container; the container
       boundary is your safety line.
-- [ ] Wrap it with a small worker that claims `red-team` tasks via
-      `bridge.py claim red-team` and posts replies via `bridge.py reply`.
+- [ ] **Agent Zero never touches the mailbox.** A trusted *host-side*
+      broker claims `red-team` tasks, sends only the task text to Agent
+      Zero, and posts the reply with `bridge.py reply`. Do not make the
+      repo writable to Agent Zero to "make the worker work".
+      *Phase 1:* the broker is manual — the Chair writes the brief, Daniel
+      pastes it into Agent Zero, and the Chair reads the answer from Agent
+      Zero's chat file. *Phase 2:* automate the broker against Agent Zero's
+      authenticated External API.
+
+> Red Team review 2026-10-28 (decision log): the bridge's forbidden-action
+> filter is a **tripwire for honest mistakes, not a security boundary** —
+> any wording can be paraphrased. What actually prevents harm is that no
+> seat has the credentials, tools or mounts to trade, pay, publish,
+> message or delete.
 
 ## 5. Pilot engagement (the first real test)
 - [ ] Queue the example task:
@@ -89,8 +105,10 @@ docs**; this runbook gives the order and the security settings.
 Move on only when, after ~4 weeks:
 - [ ] At least 5 engagements logged with dissent recorded.
 - [ ] The Red Team changed or sharpened at least one recommendation.
-- [ ] No security incident; the bridge rejected every forbidden action in
-      the Red Team's own probing.
+- [ ] No security incident. In the Red Team's own probing, no seat could
+      *perform* a forbidden action (capability check), and every probe the
+      bridge should catch (malformed, tampered, forged, replayed or
+      traversal envelopes) was rejected — see the regression tests.
 - [ ] Costs per engagement are known and acceptable.
 
 **Phase 2:** OpenHands (Lead Engineer), Goose (Toolsmith).

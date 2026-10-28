@@ -52,14 +52,23 @@ OPTIONAL = {"created_at", "approved_by_daniel"}
 TASK_ID_RE = re.compile(r"^\d{4}-\d{2}-\d{2}-[a-z0-9][a-z0-9-]{1,60}-\d{2}$")
 REPLY_TO_RE = re.compile(r"^council/outbox/[a-z-]+/$")
 
-# Actions no seat may ever be asked to do (CLAUDE.md section 2).
+# Tripwire for actions no seat may ever be asked to do (CLAUDE.md section 2).
+# This is NOT a security boundary: wording can always be paraphrased. The real
+# boundary is that no seat is given the credentials or tools to do these things.
+# The tripwire exists to catch honest mistakes in the Chair's own envelopes.
 FORBIDDEN_PATTERNS = [
-    r"\bplace[_ ]?(an? )?(crypto|equity|option)?[_ ]?order", r"\bcancel[_ ]?\w*[_ ]?order",
-    r"\b(buy|sell) (btc|eth|bitcoin|crypto|shares?|stock)", r"\btransfer (funds|money)",
-    r"\bwire\b", r"\bsend (an? )?(email|message|dm) to (?!daniel)",
-    r"\bpublish (the )?listing", r"\bchange (the )?(airbnb )?price",
-    r"\bdelete (all|the) ", r"\brm -rf\b",
+    r"\bplace[_ ]?(an? )?(crypto|equity|option|market|limit)?[_ ]?order",
+    r"\bcancel[_ ]?\w*[_ ]?order", r"\bmarket (purchase|buy|sell)",
+    r"\b(buy|sell|purchase) (\w+ )?(btc|eth|bitcoin|crypto|shares?|stocks?|tokens?)",
+    r"\btransfer (funds|money|crypto)", r"\bmove (funds|money)", r"\bwire\b",
+    r"\bsend (an? )?(email|message|dm|text) to (?!daniel)",
+    r"\bpublish (the )?listing", r"\bchange (the )?(airbnb |listing )?prices?",
+    r"\b(delete|erase|wipe|purge|destroy) ", r"\brm -rf\b",
+    r"\b(change|reset|disable) (the )?(password|2fa|mfa|security|account) ",
+    r"\bignore (all|previous|the) (rules|instructions|constraints)",
 ]
+# input_context holds references (paths, memory keys, URLs), never prose.
+CONTEXT_REF_RE = re.compile(r"^[A-Za-z0-9_./:#?=&%~+@-]{1,300}$")
 
 
 class EnvelopeError(ValueError):
@@ -77,14 +86,17 @@ def validate(env: dict) -> None:
     extra = set(env) - set(REQUIRED) - OPTIONAL
     if extra:
         errs.append(f"unknown fields: {', '.join(sorted(extra))}")
+    nulls = [k for k in REQUIRED if k in env and env[k] is None]
+    if nulls:
+        errs.append(f"fields may not be null: {', '.join(nulls)}")
 
     tid = env.get("task_id")
     if tid is not None and (not isinstance(tid, str) or not TASK_ID_RE.match(tid)):
         errs.append("task_id must look like YYYY-MM-DD-<slug>-NN")
 
     seat = env.get("target_seat")
-    if seat is not None and seat not in SEATS:
-        errs.append(f"unknown target_seat '{seat}'")
+    if seat is not None and (not isinstance(seat, str) or seat not in SEATS):
+        errs.append(f"unknown target_seat {seat!r}")
     elif seat is not None:
         if env.get("agent") != SEATS[seat]["agent"]:
             errs.append(f"seat '{seat}' must be served by '{SEATS[seat]['agent']}'")
@@ -105,16 +117,28 @@ def validate(env: dict) -> None:
             errs.append(f"{key} must be a list of strings")
     if isinstance(env.get("done_when"), list) and not env["done_when"]:
         errs.append("done_when needs at least one acceptance criterion")
+    ctx = env.get("input_context")
+    if isinstance(ctx, list):
+        bad = [x for x in ctx if isinstance(x, str) and not CONTEXT_REF_RE.match(x)]
+        if bad:
+            errs.append("input_context items must be references (paths, keys, URLs), not prose")
     if "independent_draft" in env and not isinstance(env["independent_draft"], bool):
         errs.append("independent_draft must be true/false")
+    if "approved_by_daniel" in env and not isinstance(env["approved_by_daniel"], bool):
+        errs.append("approved_by_daniel must be true/false")
     rt = env.get("reply_to")
     if rt is not None and (not isinstance(rt, str) or not REPLY_TO_RE.match(rt)):
         errs.append("reply_to must be council/outbox/<seat>/")
 
-    text = " ".join(str(env.get(k, "")) for k in ("objective", "expected_output")).lower()
+    # Scan every free-text field the seat will act on.
+    parts: list[str] = []
+    for k in ("objective", "expected_output", "constraints", "done_when"):
+        v = env.get(k)
+        parts.extend(v if isinstance(v, list) else [v] if isinstance(v, str) else [])
+    text = " ".join(p for p in parts if isinstance(p, str)).lower()
     for pat in FORBIDDEN_PATTERNS:
         if re.search(pat, text):
-            errs.append(f"objective asks for a never-delegated action (matched '{pat}')")
+            errs.append(f"envelope asks for a never-delegated action (matched '{pat}')")
             break
 
     if errs:
@@ -128,46 +152,82 @@ def _write_atomic(path: Path, data: dict) -> None:
     os.replace(tmp, path)
 
 
+def _task_ids_anywhere(task_id: str) -> bool:
+    """A task ID is unique across ALL seats, so replies can't collide."""
+    return any(INBOX.glob(f"*/{task_id}.json")) or any(INBOX.glob(f"*/*/{task_id}.json"))
+
+
+def _check_seat(seat: object) -> str:
+    if not isinstance(seat, str) or seat not in SEATS:
+        raise EnvelopeError(f"unknown seat {seat!r}")
+    return seat
+
+
+def _check_task_id(task_id: object) -> str:
+    if not isinstance(task_id, str) or not TASK_ID_RE.match(task_id):
+        raise EnvelopeError("task_id must look like YYYY-MM-DD-<slug>-NN")
+    return task_id
+
+
 def send(env: dict) -> Path:
     validate(env)
     env = {**env, "created_at": env.get("created_at")
            or datetime.now(timezone.utc).isoformat(timespec="seconds")}
+    if _task_ids_anywhere(env["task_id"]):
+        raise EnvelopeError(f"task {env['task_id']} already exists (IDs are unique across seats)")
     path = INBOX / env["target_seat"] / f"{env['task_id']}.json"
-    if path.exists() or (path.parent / "claimed" / path.name).exists():
-        raise EnvelopeError(f"task {env['task_id']} already exists for {env['target_seat']}")
     _write_atomic(path, env)
     return path
 
 
 def claim(seat: str) -> dict | None:
-    if seat not in SEATS:
-        raise EnvelopeError(f"unknown seat '{seat}'")
+    """Claim the oldest valid task. Invalid or tampered files are quarantined."""
+    seat = _check_seat(seat)
     box = INBOX / seat
-    pending = sorted(box.glob("*.json")) if box.exists() else []
-    if not pending:
-        return None
-    src = pending[0]
-    dst = box / "claimed" / src.name
-    dst.parent.mkdir(parents=True, exist_ok=True)
-    os.replace(src, dst)  # atomic move = only one worker claims a task
-    return json.loads(dst.read_text())
+    for src in (sorted(box.glob("*.json")) if box.exists() else []):
+        dst = box / "claimed" / src.name
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        try:
+            os.replace(src, dst)  # atomic move = only one worker claims a task
+        except FileNotFoundError:
+            continue  # another worker got it first
+        try:
+            env = json.loads(dst.read_text())
+            validate(env)  # re-validate: the file may have been edited after send
+            if env["target_seat"] != seat or f"{env['task_id']}.json" != src.name:
+                raise EnvelopeError("envelope does not match its mailbox")
+            return env
+        except (EnvelopeError, json.JSONDecodeError) as e:
+            q = box / "rejected" / src.name
+            q.parent.mkdir(parents=True, exist_ok=True)
+            os.replace(dst, q)
+            print(f"warning: quarantined {src.name}: {e}", file=sys.stderr)
+    return None
 
 
 def reply(seat: str, result: dict) -> Path:
-    if seat not in SEATS:
-        raise EnvelopeError(f"unknown seat '{seat}'")
+    seat = _check_seat(seat)
+    if not isinstance(result, dict):
+        raise EnvelopeError("reply must be a JSON object")
     for key in ("task_id", "status", "output"):
         if key not in result:
             raise EnvelopeError(f"reply missing '{key}'")
+    task_id = _check_task_id(result["task_id"])  # also blocks path traversal
     if result["status"] not in {"done", "failed", "needs_daniel"}:
         raise EnvelopeError("status must be done | failed | needs_daniel")
-    claimed = INBOX / seat / "claimed" / f"{result['task_id']}.json"
-    if not claimed.exists():
-        raise EnvelopeError(f"no claimed task {result['task_id']} for {seat}")
-    result = {**result, "seat": seat, "untrusted": True,
+    claimed = INBOX / seat / "claimed" / f"{task_id}.json"
+    if not claimed.is_file():
+        raise EnvelopeError(f"no claimed task {task_id} for {seat}")
+    # Results are keyed by task AND seat, and written exactly once.
+    path = OUTBOX / "chair" / f"{task_id}__{seat}.json"
+    if path.exists():
+        raise EnvelopeError(f"{seat} already replied to {task_id}; replies are final")
+    result = {**result, "task_id": task_id, "seat": seat, "untrusted": True,
               "replied_at": datetime.now(timezone.utc).isoformat(timespec="seconds")}
-    path = OUTBOX / "chair" / f"{result['task_id']}.json"
     _write_atomic(path, result)
+    done = INBOX / seat / "done" / claimed.name
+    done.parent.mkdir(parents=True, exist_ok=True)
+    os.replace(claimed, done)
     return path
 
 
