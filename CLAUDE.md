@@ -34,11 +34,18 @@ low, prefer the approach Daniel builds and understands (**learning mode**)
 over the fastest black-box route (**delivery mode**). State which mode an
 engagement is in at the start.
 
-Active project areas the council serves:
-- Robinhood crypto trading agent (repo `robinhood-agent-cloud`)
-- Longevity Ledger (personal longevity protocol)
-- Agent-driven side business (longevity/health niche)
-- Casa La Fonte (Tuscan farmhouse rented on Airbnb via an agency)
+Active project areas the council serves (live = standing item at every
+biweekly meeting):
+- **Live:** Robinhood crypto trading agent (repo `robinhood-agent-cloud`; an
+  experimentation playground, high risk accepted)
+- **Live:** Casa La Fonte host agent and marketing push (Tuscan farmhouse)
+- **Live:** Longevity Ledger (personal longevity protocol)
+- **Starting November 2026:** AI-expert road map (the long-term horizon above)
+  and the agent-driven side business (longevity/health niche)
+- **Starting in the coming weeks:** Daniel's new real estate business. Before
+  any substantive work, the Product & Housing Strategist runs a conflict check
+  against his current employment (outside-business, IP, non-compete and
+  confidentiality terms), and no employer-confidential material is used.
 - Product strategy frameworks related to Daniel's work in housing
 - The council itself (its prompts, evals and infrastructure)
 
