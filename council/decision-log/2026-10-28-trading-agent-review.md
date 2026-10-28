@@ -4,7 +4,7 @@ date: 2026-10-28
 project: trading-agent
 mode: delivery
 revisit_on: 2027-01-13
-status: proposed
+status: approved-by-daniel
 ---
 
 # Trading agent review: risk, performance and improvement measures
@@ -119,7 +119,21 @@ journal); low on anything about strategy skill (11 days, 1 closed trade).
   deserves a longer trial.
 
 ## Daniel's decision
-<pending>
+2026-10-28 12:55 CT: approved; asked the council to implement all operational fixes.
+
+## Implementation (2026-10-28)
+- `robinhood-agent-cloud` commits 0c94370 (CHECK = read-only watchdog, deployed first:
+  it only removes the ability to trade) and 6769e8c (CYCLE run lock, Checks A-C,
+  NO_NEW_ENTRIES, README owner controls, settings).
+- Quant & Risk Officer: veto lifted after two review rounds (7 + 2 required edits).
+- Evaluator tabletop: 8/8 scenarios pass (`evals/trading-agent/ops-tabletop-2026-10-28.md`).
+  Both reviewers independently found the same bug: Check A double-counted the
+  previous cycle's own fills — fixed with a `Cash reconciled at` marker.
+- Research Analyst confirmed stop mechanics: a triggered stop becomes a market sell
+  collared at 5% below the bid, so a >5% gap can leave it unfilled (finding 3 stands).
+- Not done (by design): Hermes watchdog — Hermes has no access to the private trading
+  repo; the check's push notifications cover alerts instead. Running-cost metering:
+  read from Claude usage at the Jan 13 review.
 
 ## Hindsight (fill in on revisit date)
 **Outcome:**
