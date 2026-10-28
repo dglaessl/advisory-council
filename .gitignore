@@ -1,0 +1,16 @@
+# secrets
+.env
+.env.*
+*.key
+*.pem
+
+# bridge runtime state (tasks and replies are logged, not committed by default)
+council/inbox/*/
+council/outbox/*/
+council/scout-inbox/*
+!council/**/.gitkeep
+
+# python
+__pycache__/
+*.pyc
+.venv/

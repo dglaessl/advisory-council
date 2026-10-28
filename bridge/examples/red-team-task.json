@@ -1,0 +1,20 @@
+{
+  "task_id": "2026-10-28-council-pilot-redteam-01",
+  "target_seat": "red-team",
+  "agent": "agent-zero",
+  "objective": "Attack the Phase 1 council design: find the three most likely ways it fails or gets compromised",
+  "input_context": ["CLAUDE.md", "SETUP.md", "bridge/bridge.py"],
+  "constraints": [
+    "work only inside the Agent Zero container",
+    "no outbound network except the model API",
+    "read-only access to the mounted repo copy"
+  ],
+  "permission_level": "R1",
+  "expected_output": "Markdown memo: ranked failure modes, evidence, and a concrete fix for each",
+  "done_when": [
+    "at least three failure modes, each with a specific file or step referenced",
+    "each fix is testable"
+  ],
+  "independent_draft": true,
+  "reply_to": "council/outbox/chair/"
+}
