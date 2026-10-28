@@ -100,7 +100,11 @@ speculative cap (no unbiased performance evidence).
   his static crypto allocation.
 
 ## Daniel's decision
-<pending>
+2026-10-28 07:13 CT, on proposal 1: the crypto account is a **playground for
+agent-based trading** (the household's other investments are conservative).
+High risk is acceptable and experiments are welcome. → The sleeve runs as an
+experiment / learning budget, not an investment mandate. Core allocation
+(question 2): pending.
 
 ## Hindsight (fill in on revisit date)
 **Outcome:**
