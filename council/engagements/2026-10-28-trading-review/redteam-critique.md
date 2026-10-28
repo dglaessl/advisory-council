@@ -1,0 +1,35 @@
+VERDICT: **proceed with changes** — not unconditional approval of unattended trading. The rules freeze is not a safety exemption. If execution cannot be serialized and reconciled outside the LLM, Daniel should suspend new autonomous entries pending remediation, with an explicit plan for existing exits. **No actions taken.**
+
+STEELMAN:
+- **Quant:** Operational failures threaten this account more immediately than marginal sizing changes. Serialization, reconciliation and stop verification target demonstrated weaknesses without retuning strategy.
+- **Evaluator:** Eleven days cannot establish alpha, and an owner-directed ETH core confounds comparison against BTC. A cost-aware passive twin and implementation audit are better decision tools than headline underperformance.
+
+FINDINGS (ranked):
+
+1. **“Small trading sleeve” understates both execution and portfolio exposure** — impact **H**, likelihood **H**. Evidence: `draft-quant-risk.md:7,32–40`; `agent/claude_settings.json:10–15`. Cash-only does not bound duplicate execution to one $100–350 order: runs can consume remaining buying power, and erroneous sale quantities can reach the core. Separately, **$1,528.89/68.5% is deliberately unprotected**, including ETH: correlated crypto exposure plus distinct protocol/ETH–BTC risk, not diversification. Quant’s stress figures implicitly require successful exits; without fills, 30/50/70% crypto declines lose approximately **$518/$863/$1,208**, or **23.2/38.7/54.1%**. Fix/test: distinguish stop-success and stop-failure scenarios; enforce core quantity reservations and account/order limits outside the model. Obtain explicit owner acceptance of core losses.
+
+2. **LLM agency and platform dependence are underweighted common-mode risks** — impact **H**, likelihood **M**. Evidence: `agent/CLAUDE.md:71–83,102–110`; settings above. Daily probabilistic interpretation is not a risk engine; the deposit incident happened despite the existing “no sale explains” rule (`CLAUDE.md:117`). Cancel-then-replace can leave stops absent; uncertain cancellation followed by market fallback can duplicate entry. Robinhood/API outages, custody/counterparty impairment or trading restrictions can disable every exit simultaneously; protection/recovery terms are unverified. Fix/test: deterministic order-state handling; simulate timeout-after-acceptance, partial fills, stale quotes and replacement failure. Document platform contingency and actual protection scope—without assuming crypto is insured.
+
+3. **Proposed operational fixes are insufficient or introduce risk** — impact **H**, likelihood **M–H**. Evidence: Quant M1–M3; Evaluator M1. A git lock needs atomic acquisition, ownership and fencing: after 90 minutes the original runner may remain active. Scheduling separation is not mutual exclusion. A pending-deposit change plus “no stop fill” misses simultaneous deposits and sales; buying-power increases can also be reservation releases. Fix/test: one enforced execution gateway, durable idempotency keys and an ID-deduplicated settled-flow ledger; quarantine unexplained differences. Test concurrent runners, expired locks, lost push acknowledgements and mixed cash flows. **STOP alone also blocks risk-reducing orders** (`CLAUDE.md:102–103`); shutdown documentation must address existing positions.
+
+4. **Deposit timing and regime assumptions can manufacture reassurance** — impact **H**, likelihood **H**. Evidence: brief; `agent/backtest_RESULTS.md:154–213`. The next 77 days imply roughly **$2,200 additional deposits**, nearly today’s equity. Deposits distort raw peaks/drawdowns and can conceal dollar losses; identical totals invested on different dates are not comparable. Nested 2023/2024/2025 windows are not independent regime tests; future funding may stop during a downturn. Fix/test: timestamped cash-flow matching, unitized/time-weighted returns, trading-sleeve attribution and dollar losses; stress halted deposits, correlated crashes and persistent sideways whipsaws.
+
+5. **Evaluator’s approval gates confuse “not disproven” with “worth funding”** — impact **M**, likelihood **H**. Evidence: `draft-evaluator.md:6,47,68–71`. The sigma claim rests on assumed volatility; stop-limit semantics are asserted more strongly than verified. Gates leave 20–25% drawdown and 1.1–1.2% fill-premium bands unresolved; 30 trades is not sufficient evidence of alpha. One severe control failure should not require a second. Fix/test: exhaustive, precedence-ordered gates and immediate safety escalation. Quiet inactivity cannot automatically justify continued paid operation.
+
+6. **Both omit the agent’s economic hurdle** — impact **M**, likelihood **H** for omission; actual cost unknown. Evidence: brief’s daily cycle plus two-hour checks. Approximately 13 invocations/day at an illustrative $0.10 each cost **$474.50/year**. A hypothetical 10% annual incremental edge on today’s $703 sleeve earns only **$70** before operating costs. Fix/test: meter marginal model/cloud/tool costs and owner time; distinguish incremental costs from sunk subscriptions and account for growing capital.
+
+**TOP FIVE MEASURES — actual priority**
+
+| Rank | Now: safety/measurement | January 13: strategy decision |
+|---|---|---|
+| 1 | Require external serialization, idempotency and execution limits; otherwise suspend new autonomous entries. Test races/timeouts. | Continue only after demonstrated control reliability. |
+| 2 | Reconcile orders, quantities, settled flows and stop expiry; independently surface failures. Test replay/missing stops. | Resolve verified stop semantics and redesign gap/exit handling. |
+| 3 | Disclose core/ETH/platform stress exposure; obtain owner risk acknowledgement. | Reconsider no-rebalancing/core allocation and custody concentration. |
+| 4 | Record flow-matched passive twin, unitized returns, signal decisions and all operating costs. | Apply exhaustive economic and safety gates. |
+| 5 | Preregister a passive-versus-active comparison without retuning. | **Default to core + DCA, trading allocation idle**, unless credible net incremental benefit justifies complexity. |
+
+**PASSIVE ALTERNATIVE:** Strongest challenger, not proven superior or safe. Preserve the same ETH/BTC core and deposit schedule; do not silently convert idle trading cash into extra BTC risk. Decide using untouched forward evidence and walk-forward, regime-diverse tests with executable fills, failed stops and full costs—not the best tuned historical row. Insufficient alpha evidence does not oblige continued live experimentation.
+
+WHAT I CHECKED AND FOUND SOUND: Spread drag, benchmark mismatch and insufficient live evidence. Quant incorrectly says cloud holdings snapshots are absent: `cloud_CYCLE.md:35–37` specifies them. I read all supplied files; no network/brokerage calls or modifications. Journal, backtest code/data, referenced YAML, actual permissions, stop semantics and bills were unavailable for verification.
+
+**Learning note:** Proving an LLM followed trading rules is different from proving those rules earn their costs.
