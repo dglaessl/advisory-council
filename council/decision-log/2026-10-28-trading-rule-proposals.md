@@ -104,7 +104,10 @@ speculative cap (no unbiased performance evidence).
 agent-based trading** (the household's other investments are conservative).
 High risk is acceptable and experiments are welcome. → The sleeve runs as an
 experiment / learning budget, not an investment mandate. Core allocation
-(question 2): pending.
+(question 2), 07:14 CT: **option B** — 25% of each new cash deposit to the core,
+75% to the trading sleeve (was 50/50). Existing core untouched, kept as the
+control group. Implemented in robinhood-agent-cloud (CLAUDE.md owner settings +
+journal decision (k)); effective from the next deposit.
 
 ## Hindsight (fill in on revisit date)
 **Outcome:**
