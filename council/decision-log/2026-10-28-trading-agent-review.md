@@ -119,7 +119,7 @@ journal); low on anything about strategy skill (11 days, 1 closed trade).
   deserves a longer trial.
 
 ## Daniel's decision
-2026-10-28 12:55 CT: approved; asked the council to implement all operational fixes.
+2026-10-28 06:55 CT: approved; asked the council to implement all operational fixes.
 
 ## Implementation (2026-10-28)
 - `robinhood-agent-cloud` commits 0c94370 (CHECK = read-only watchdog, deployed first:
