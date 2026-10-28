@@ -67,9 +67,12 @@ docs**; this runbook gives the order and the security settings.
 - [ ] Set its model to a **non-Anthropic** model (frontier or strong
       open-weight). Gemini 4 can be swapped in later as a one-line change.
 - [ ] Mount a **sanitized, read-only snapshot** of the repo (e.g.
-      `~/council/repo-snapshot` → `/council:ro`) made with `git archive`:
-      tracked files only, so no `.env`, mailboxes or other seats' replies.
-      Give it no other volumes and no secrets except its own model key.
+      `~/council/repo-snapshot` → `/council:ro`) built with
+      `bridge/make_snapshot.sh` — an **allowlist** of reference files plus
+      a denylist check that refuses mailboxes, replies, ID reservations and
+      secrets even if they are tracked in git. Add task-specific files as
+      extra arguments. Give the container no other volumes and no secrets
+      except its own model key.
 - [ ] Keep every `.env` / secret **outside** any folder that is mounted into
       an agent container.
 - [ ] Limit outbound network to the model API if you can (egress firewall
@@ -79,10 +82,13 @@ docs**; this runbook gives the order and the security settings.
       broker claims `red-team` tasks, sends only the task text to Agent
       Zero, and posts the reply with `bridge.py reply`. Do not make the
       repo writable to Agent Zero to "make the worker work".
-      *Phase 1:* the broker is manual — the Chair writes the brief, Daniel
-      pastes it into Agent Zero, and the Chair reads the answer from Agent
-      Zero's chat file. *Phase 2:* automate the broker against Agent Zero's
-      authenticated External API.
+      *Phase 1:* the broker is manual and **serialized** (one task at a
+      time) — the Chair writes the brief with its task ID, it is pasted into
+      a new Agent Zero chat, and the Chair reads the answer from Agent Zero's
+      chat file in `~/council/agent-zero-data/chats/` (host side, read-only
+      for the Chair) and records it with `bridge.py reply`.
+      *Phase 2:* automate the broker against Agent Zero's authenticated
+      External API, running as its own OS user.
 
 > Red Team review 2026-10-28 (decision log): the bridge's forbidden-action
 > filter is a **tripwire for honest mistakes, not a security boundary** —
@@ -121,5 +127,7 @@ If you prefer running the Chair locally, keep the same repo on both
 machines and sync only `council/inbox`, `council/outbox` and logs through
 git (commit + push after each send/reply; Hermes pulls on its schedule).
 For this, delete the `council/inbox/*/` and `council/outbox/*/` lines from
-`.gitignore` so the mailboxes are tracked.
+`.gitignore` so the mailboxes are tracked. Agent snapshots stay safe because
+`bridge/make_snapshot.sh` refuses mailbox content even when it is tracked —
+never build a snapshot with plain `git archive`.
 Slower, but every message is in git history — a useful audit trail.

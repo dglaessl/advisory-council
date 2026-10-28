@@ -76,6 +76,30 @@ before acting on it.
 - An automated broker that can be shown to enforce seat identity at the OS
   level would let us relax the manual step.
 
+## Round 2 — Red Team re-attack of the fixes (same day)
+Agent Zero chat `SVPaHbpT`. Ran the suite (17/17), confirmed the round-1 attacks
+are blocked, rated each round-1 finding "partly fixed", and found new gaps.
+Chair reproduced the testable ones (plus a missed one: task IDs with a
+trailing newline passed because `re.match` + `$` accepts a final newline).
+
+| # | Finding (impact/likelihood) | Fix |
+|---|---|---|
+| 1 | `git archive` is not sanitization; the git-sync alternative would leak mailboxes into the snapshot (H/M) | `bridge/make_snapshot.sh`: allowlist + post-archive denylist; canary test refuses tracked mailbox and `.env` files |
+| 2 | Concurrent replies/sends could still overwrite dissent or share an ID (H/L→M) | One exclusive lock around every state change; no-clobber publish via `os.link`; atomic ID reservation (`O_EXCL`) in `council/ids/`; 8-thread race test |
+| 3 | Invalid UTF-8 escaped quarantine and could still get a reply; replay could replace a live claim (M/M) | Bounded UTF-8 reads, quarantine on any read error, claim moves never overwrite, reply re-validates the claimed task |
+| 4 | No recovery path: rejected task burned its ID; crash between reply and completion was unrecoverable (M/M) | Invalid sends no longer reserve the ID; retries use the next `-NN`; identical reply retry completes an interrupted reply, conflicting retry rejected |
+| 5 | Reference rule checked characters, not safety (`../`, absolute, other seats' replies, trailing newline) (M/H) | `fullmatch` everywhere; references must be relative repo paths without `..`, https URLs or `memory:` keys; mailbox/secret prefixes refused |
+| 6 | Tripwire blocked legitimate constraints like "Do not delete any files" (M/H) | Negated clauses stripped before the tripwire runs (it remains a tripwire, not a boundary) |
+| – | `reply_to` could name another outbox; `output: null` and `status: []` | Strict reply schema; `reply_to` must be the Chair's outbox |
+
+Evidence: 28/28 tests pass (11 new `test_rt2_*`), concurrency tests stable
+over repeated runs.
+
+**Still open (Phase 2 gate):** OS-level seat identity for workers; verified
+deployment of mounts/egress/capabilities end-to-end. Red Team's position:
+block private-data piloting until snapshot checks pass (now implemented) and
+block automation until the above are demonstrated — Chair agrees.
+
 ## Daniel's decision
 <pending>
 
