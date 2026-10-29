@@ -479,6 +479,13 @@ def run(seat: str, final_model: type[CrewResult], build_crew: CrewBuilder,
         print(f"error: invalid envelope: {e}", file=sys.stderr)
         return 1
 
+    # Fail fast on configuration before anything is written.
+    try:
+        llm = build_llm(args.dry_run, final_model)
+    except SystemExit as e:
+        print(e, file=sys.stderr)
+        return 1
+
     out_dir = args.out / f"{env['task_id']}__{seat}"
     if out_dir.exists() and not args.dry_run:
         print(f"error: {out_dir} already exists; replies are final, resend as a new -NN",
@@ -493,7 +500,6 @@ def run(seat: str, final_model: type[CrewResult], build_crew: CrewBuilder,
                   f"dry_run={args.dry_run}; started={started.isoformat(timespec='seconds')}; "
                   "analysis only, untrusted until the Chair verifies")
     try:
-        llm = build_llm(args.dry_run, final_model)
         tools = [] if args.dry_run else search_tools()
         brief = envelope_brief(env, load_context(env, input_dir))
         crew = build_crew(env, brief, llm, tools)
@@ -512,8 +518,6 @@ def run(seat: str, final_model: type[CrewResult], build_crew: CrewBuilder,
                  "output": json.dumps(result_json, ensure_ascii=False),
                  "notes": f"{notes_base}; tools={'search' if tools else 'none'}; "
                           f"employment_check={result.employment_conflict_check.status}"}
-    except SystemExit:
-        raise
     except Exception as e:  # report failure as a valid Bridge reply
         traceback.print_exc()
         result_json = None

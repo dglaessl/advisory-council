@@ -1,0 +1,43 @@
+# Council global .gooseignore -> copy to ~/.config/goose/.gooseignore
+# Paths matching these patterns are blocked for goose's Developer extension tools
+# (read, write, edit, and shell commands on those paths). Other extensions are NOT
+# restricted by this file. Creating this file switches off goose's built-in defaults,
+# so they are repeated at the top.
+
+# goose defaults (must be restated once this file exists)
+**/.env
+**/.env.*
+**/secrets.*
+
+# credentials and keys
+**/.ssh/**
+**/.aws/**
+**/.gnupg/**
+**/.kube/**
+**/.docker/config.json
+**/.netrc
+**/.npmrc
+**/.pypirc
+**/.git-credentials
+**/*.pem
+**/*.key
+**/*.p12
+**/id_rsa*
+**/id_ed25519*
+**/credentials
+**/credentials.*
+
+# council secrets and agent data
+**/.config/council/**
+**/.config/goose/**
+**/council/hermes-data/**
+**/council/agent-zero-data/**
+
+# macOS keychains, password managers, browser profiles, mail
+**/Library/Keychains/**
+**/Library/Application Support/1Password/**
+**/Library/Application Support/Google/Chrome/**
+**/Library/Application Support/Firefox/**
+**/Library/Safari/**
+**/Library/Mail/**
+**/Library/Messages/**

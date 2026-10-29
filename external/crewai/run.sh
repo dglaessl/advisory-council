@@ -84,7 +84,7 @@ if [[ $DRY_RUN -eq 1 ]]; then
 else
   [[ -f "$ENV_FILE" ]] || die "env file $ENV_FILE not found (see README: chmod 600, outside the repo)"
   case "$(cd "$(dirname "$ENV_FILE")" && pwd)/" in "$REPO_DIR"/*) die "env file must live outside the repo";; esac
-  PERMS="$(stat -f '%Lp' "$ENV_FILE" 2>/dev/null || stat -c '%a' "$ENV_FILE")"
+  PERMS="$(stat -c '%a' "$ENV_FILE" 2>/dev/null || stat -f '%Lp' "$ENV_FILE")"  # GNU, then macOS
   [[ "$PERMS" == "600" ]] || die "env file $ENV_FILE must be chmod 600 (is $PERMS)"
   OPENROUTER_API_KEY="$(read_key OPENROUTER_API_KEY)"
   [[ -n "$OPENROUTER_API_KEY" ]] || die "OPENROUTER_API_KEY missing in $ENV_FILE"

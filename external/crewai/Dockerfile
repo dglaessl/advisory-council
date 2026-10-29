@@ -27,7 +27,6 @@ COPY --from=bridge bridge.py /app/bridge/bridge.py
 COPY crews/ /app/crews/
 
 # Unprivileged by default; run.sh also passes --user to match the host owner of /out.
-RUN useradd --uid 10001 --no-create-home --shell /usr/sbin/nologin crew
-USER crew
+USER 10001:10001
 
 ENTRYPOINT ["python", "-I", "/app/crews/dispatch.py"]

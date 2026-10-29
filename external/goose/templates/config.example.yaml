@@ -1,0 +1,8 @@
+# Council settings for ~/.config/goose/config.yaml.
+# Do NOT copy this over your file blindly: run `goose configure` first (it stores the
+# OpenRouter key in the macOS Keychain), then add or adjust these keys.
+GOOSE_PROVIDER: openrouter
+GOOSE_MODEL: openai/gpt-6-luna      # OpenRouter model ID, as listed on openrouter.ai
+GOOSE_MODE: approve                 # Manual Approval: ask before tool use
+GOOSE_TELEMETRY_ENABLED: false
+GOOSE_MAX_TURNS: 25

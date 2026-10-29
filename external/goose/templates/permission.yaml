@@ -1,0 +1,10 @@
+# Council-safe goose tool permissions. goose-council.sh copies this to
+# ~/.config/goose/permission.yaml before EVERY run, because one click on
+# "Always Allow" in goose adds the tool to always_allow for all future runs.
+user:
+  always_allow: []
+  ask_before:
+  - shell
+  - write
+  - edit
+  never_allow: []
