@@ -1,0 +1,151 @@
+diff --git a/CLAUDE.md b/CLAUDE.md
+index b3fd3a6..4885a82 100644
+--- a/CLAUDE.md
++++ b/CLAUDE.md
+@@ -13,9 +13,9 @@ Each time you're started, run **one trading cycle** (procedure below), then stop
+ | Setting | Value |
+ |---|---|
+ | Starting capital | $250, plus weekly deposits |
+-| Crypto share of invested capital | at least 80% |
+ | Speculative coins (outside the top 20 by market cap) | at most 50% of trading equity; at most 10% while BTC's last daily close is below its 200-day average |
+ | Risk per new position | at most 4% of trading equity lost if its stop is hit |
++| Total open risk (heat) | at most 8% of trading equity, counting the stop-collar gap; see "Total open risk" (from 2026-10-29) |
+ | New listings | don't buy a coin within 90 days of its first trading day |
+ | Largest single position | 50% of trading equity (the core doesn't count) |
+ | Core | the owner's transferred coins (0.006829 BTC now, plus the ~0.25 ETH transfer when it arrives) and the BTC bought with the core share of each new cash deposit; untraded, see "Core" |
+@@ -37,8 +37,8 @@ Each time you're started, run **one trading cycle** (procedure below), then stop
+ - The core is a long-term holding kept apart from trading: the owner's transferred coins plus BTC bought
+   with the core share of cash deposits. Never sell core coins, never use them to fund trades, and don't
+   apply stops, targets or profit rules to them. The circuit breaker doesn't sell them.
+-- When a cash deposit is detected, buy BTC for the core with the core share of it in that cycle (limit
+-  order at the mark, then market if unfilled). This buy counts toward trade limits. When the owner
++- When a cash deposit is detected, buy BTC for the core with the core share of it in that cycle (one
++  market order, see "Entries"). This buy counts toward trade limits. When the owner
+   transfers in coins they say are for the core, add them to the core at their market value.
+ - Trading equity = total equity minus the core's market value. Position sizing, the largest-position limit
+   and the speculative limit all use trading equity. The circuit breaker and the benchmark use total equity.
+@@ -49,7 +49,18 @@ Each time you're started, run **one trading cycle** (procedure below), then stop
+ 
+ - **Position sizing.** Size each new position (or addition) so that hitting its stop loses at most 4% of
+   trading equity: dollar size = 0.04 × trading equity ÷ (distance from entry to stop, as a fraction). Then
+-  shrink it to fit every other limit.
++  shrink it to fit every other limit, including the total open risk cap.
++- **Total open risk (heat).** Before any new position or addition, compute the heat of every trading
++  position with `bin/calc.py`: quantity × max(0, current mark − 0.95 × its stop trigger). The 0.95 is the stop
++  collar: a triggered stop becomes a market sell that may fill as low as 5% below the trigger. A trading
++  holding with no stop, or whose mark is at or below its stop trigger, counts at its full market value. Core coins never count. The new position counts
++  as its dollar size × (1.01 − 0.95 × stop ÷ planned entry) (1% for the entry spread). Total heat with the
++  new position must be at most 8% of trading equity; if it isn't, shrink it to size = (0.08 × trading
++  equity − existing heat) ÷ (1.01 − 0.95 × stop ÷ planned entry), or skip it if that is below the minimum
++  order size. With several entries in one cycle, recompute heat after each fill from the actual fill price
++  and quantity. The cap only limits new buys. It never forces
++  a sale. Write the heat before and after each entry in the cycle log
++  (`Heat: $X = Y% of trading equity`).
+ - **Breakouts only.** Open new positions only on breakout setups (see Volume confirmation). Don't open
+   pullback or dip-buying positions. Existing positions opened on pullbacks keep their stops and targets
+   until they exit.
+@@ -68,10 +79,21 @@ Each time you're started, run **one trading cycle** (procedure below), then stop
+   "insufficient history" for them). Backtest: new listings lagged BTC by a median of ~20% over 30-90 days.
+ - **Ranking candidates.** When several setups qualify, prefer the one that is strongest against BTC:
+   highest `rs30` (30-day return minus BTC's), with `rs7` as the tiebreaker.
+-- **Entries with limit orders.** Buy with a limit order at the mark price. Check it for about 2 minutes. If
+-  it hasn't filled, cancel it, then use a market order only if the setup is still valid. Never leave an
+-  unfilled entry order open after the cycle ends. Log each fill's distance from the mark so the savings can
+-  be measured. Exits (stops, trims, breakdowns) use market or stop orders.
++- **Entries (from 2026-10-29).** Buy with **one market order**; no limit orders (limit-at-mark entries
++  filled 0 of 5 times). Right before ordering, get a fresh quote and use its ask as the planned entry:
++  recompute the stop distance, size, reward-to-risk, every limit and the heat cap against it, and skip
++  the trade if it no longer qualifies. Place the order once. Then confirm it with `get_crypto_orders`
++  (by order ID, or `updated_at_gte` the time just before you ordered, filtered to side buy and this
++  symbol, if no ID came back) and use the actual fill. If such an order turns out filled, book the fill
++  and place nothing further. **Never retry a buy whose outcome is unclear** (error, timeout, no ID, not
++  found, or still not filled after a few minutes): end new entries for this cycle, record it in State as
++  `UNRESOLVED <order ID or time>`, add `## OWNER ACTION NEEDED` with what you know, and leave `- Cash
++  reconciled at:` at the time just before that order, so a duplicate buy is impossible and Check A can
++  see a late fill. A partial fill: cancel the rest, confirm the cancel, book the filled quantity, place its
++  stop, then treat it as unclear as above. An unclear **core** buy is never added to "Core BTC owed": the
++  owner decides after checking whether it filled. Log each fill's distance from the mark. The stop,
++  reward-to-risk and heat checks apply to trading entries only; a core buy is one market order of the core
++  share, with no stop or target. Exits (stops, trims, breakdowns) use market or stop orders.
+ - **Taking profit.** When a position reaches its target, sell half and keep a stop on the rest. Then either
+   set a new target from the chart or trail the stop (below).
+ - **Breakeven stop.** Once a position is 8% or more above its average cost, raise its stop to average cost
+@@ -89,6 +111,24 @@ Each time you're started, run **one trading cycle** (procedure below), then stop
+   record equity vs. the benchmark's value. If equity trails the benchmark by more than 5% at the 3-month
+   review (2027-01-13), add an `## OWNER REVIEW NEEDED` note at the top of the journal so the strategy gets
+   revisited.
++- **Unit tracking (from 2026-10-29; measurement only, it changes no trading decision).** Deposits make
++  equity and its peak rise even when trading loses, so the journal also tracks results per unit, like
++  a fund. Two unit ledgers, each with units, NAV (value per unit) and peak NAV:
++  - **Account:** value = total equity. Flows = every owner deposit (cash or in-kind) at its USD value.
++  - **Sleeve:** value = trading equity. Flows = a cash deposit minus the core BTC actually bought for it
++    in this cycle (its fill notional), plus coins the owner puts on the trading side at USD value. A core
++    buy in a later cycle (paying "Core BTC owed") or by mistake is a flow out of the sleeve in the cycle it
++    fills. Never net a core share that hasn't been bought.
++  - Values are end-of-cycle, after all fills, at the same marks as State.
++  - First cycle with no `Units` lines in State: start both at NAV 1.0000 (units = value minus any unbooked
++    cash, see below) and write the start date. Every later cycle, with `bin/calc.py`: if there is a flow, NAV before the flow =
++    (value − flow) ÷ old units, and new units = old units + flow ÷ that NAV; then NAV = value ÷ units.
++    Peak NAV = the highest NAV recorded; drawdown = NAV ÷ peak NAV − 1. Units and NAV to 4 decimals.
++  - Write in State: `- Units: account <units> @ NAV <nav> (peak <nav>, drawdown <x>%) | sleeve <units>
++    @ NAV <nav> (peak <nav>, drawdown <x>%) | since <date>`. A deposit the cycle has not booked (Check A
++    sends it to the owner) is not a flow: for the Units lines use each value minus that unbooked amount
++    (the Check A difference), and never start the ledgers or raise a peak NAV on unbooked cash. An
++    owner-confirmed deposit is a flow in the cycle that writes BOOKED.
+ 
+ ## Hard rules (never break these)
+ 
+@@ -114,7 +154,7 @@ Each time you're started, run **one trading cycle** (procedure below), then stop
+ 1. **Read the journal.** Read `journal.md` in this folder for your positions, theses, stops, the equity peak
+    and your notes from the last cycle. Check for `STOP` (rule 5).
+ 2. **Check the account.** Use the MCP tools to get buying power, holdings, open orders and current quotes.
+-   Compare cash with the journal. A cash increase that no sale explains is a deposit: log it.
++   Compare cash with the journal using Check A in `cloud/CYCLE.md`; never call a cash increase a deposit by eye.
+ 3. **Get the history.** If the MCP tools don't provide price history, fetch public candles from Coinbase:
+    - Daily: `https://api.exchange.coinbase.com/products/{SYMBOL}-USD/candles?granularity=86400`
+    - Hourly: `https://api.exchange.coinbase.com/products/{SYMBOL}-USD/candles?granularity=3600`
+@@ -141,6 +181,7 @@ than 30 entries, condense the oldest into a short summary.
+ - Equity: $<value> | Cash: $<value> | Peak equity: $<value>
+ - Total deposits to date: $<value>
+ - Core: <qty> BTC (+ <qty> ETH) = $<value>, <share>% of equity | Trading equity: $<value>
++- Units: account <units> @ NAV <nav> (peak <nav>, drawdown <x>%) | sleeve <units> @ NAV <nav> (peak <nav>, drawdown <x>%) | since <date>
+ - Positions:
+   - <ASSET>: <qty> @ avg $<price> | stop $<price> | target $<price> | thesis: <one line>
+ - Notes for next cycle: <levels to watch, ideas, concerns>
+diff --git a/cloud/CYCLE.md b/cloud/CYCLE.md
+index 7d150a4..7bf9ffc 100644
+--- a/cloud/CYCLE.md
++++ b/cloud/CYCLE.md
+@@ -61,7 +61,8 @@ This replaces judging deposits by eye (a stop fill was booked as a deposit on 20
+ 1. Call `get_crypto_orders` with `updated_at_gte` = the journal's `- Cash reconciled at:` time (or
+    `- Last cycle:` if that line is missing), as UTC ending in `Z`. Take every order with filled
+    quantity since then, including stop orders, but **skip any order ID already recorded in the
+-   journal** (its effect is already in `Cash: $`).
++   journal** (its effect is already in `Cash: $`), except an order listed as `UNRESOLVED`: count its
++   fill and resolve it in the journal.
+ 2. With `bin/calc.py`: expected cash = journal `Cash: $` + the executed notional of filled sells
+    − the executed notional of filled buys. Difference = `crypto_buying_power.buying_power` −
+    expected cash.
+@@ -79,7 +80,8 @@ This replaces judging deposits by eye (a stop fill was booked as a deposit on 20
+      <date>: $<amount> deposit, BOOKED <UTC time>`. A BOOKED line is never used again.
+    - While an unresolved `## OWNER ACTION NEEDED` note exists, make no new entries. "New entries"
+      means trading positions. The core buy for a booked deposit still happens; if it is skipped
+-     for any reason, add its amount to "Core BTC owed".
++     for any reason, add its amount to "Core BTC owed", except when the buy's outcome is unclear
++     (CLAUDE.md "Entries"): then record it as `UNRESOLVED` and leave it to the owner.
+ 4. Write the reconciliation in the cycle log: `Cash check: journal $X + sells $Y − buys $Z =
+    expected $E; buying power $B; difference $D → <classification>`.
+ 
+diff --git a/journal.md b/journal.md
+index fc8a1c6..614fe22 100644
+--- a/journal.md
++++ b/journal.md
+@@ -13,7 +13,7 @@
+   - XRP: 1 (owner in-kind, 2026-10-19) ≈ $1.30 | dust, below the $10 minimum, so no stop order | trading side, may be folded into a future XRP trade.
+   - Note: the BTC holding on the broker (0.01110445) = core 0.00966963 + trading lot 0.00143482. The ETH holding (0.258986) = core 0.242172 + trading lot 0.016814. Only the trading lots have stops.
+ - Notes for next cycle: CORRECTION 2026-10-24: the +$42.48 cash was NOT a deposit. The NEAR stop order (6ad3c3b4) filled at 10:16 ET today: 10 NEAR sold @ $4.2488 = $42.48, a loss of about $7.50 on the $49.98 cost. The earlier cycle log entry misread it as a deposit because it did not check the stop order's fill. The mistaken $21.24 core BTC buy came out of trading cash and can't be undone (the core is never sold); consider it a $21.24 shift from trading to core, and the owner may want to know. Deposits and benchmark are back to their pre-error values. NEAR is closed; 4 stop orders remain (BTC x2, ETH, SOL). LESSON: before calling a cash increase a deposit, check recent orders (including closed stop fills) with updated_at_gte, and check holdings for a missing coin. DEPOSIT 2026-10-23: cash rose $334.74 → $434.74 (+$100) with no sale; pending_deposits unchanged at $262.52. Logged; $50 went to core BTC, $50 stays trading cash (cash now $384.74). Not the routine $200 amount, so the owner may want to confirm. DEPOSIT 2026-10-20: cash rose $206.47 → $468.99 (+$262.52) with no sale, and pending_deposits rose from $200 to $462.52 by the same amount. It was logged as a deposit. It's not the routine $200 amount, so the owner may want to confirm it. Don't count it again when it settles (pending_deposits $462.52 is already fully logged). All $334.74 cash is trading cash, waiting for a breakout. The $5.97 cash on 2026-10-19 was a separate deposit by the owner (confirmed), correctly logged as a deposit. OWNER STOCK HOLDING: the owner's 0.01664 AAPL was gone by 2026-10-20 00:15 (equity_value $0). That was the owner's expected transfer out, so no halt and no change to deposits. It was never counted in equity, and the peak was recomputed to $1,704.04 without it. The transfers are DONE (logged 2026-10-19 11:55): 0.242172 ETH is in the core; 1 XRP is on the trading side; $5.97 cash is logged as a deposit. PENDING DEPOSIT (2026-10-19): the broker still shows pending_deposits $200 for this week's deposit; it's already spendable (buying power $200.50 after the core buy). It's logged, so don't count it again when it settles. 3-MONTH REVIEW: the owner wants a performance review on 2027-01-13 whatever the result (moved from 2027-01-17 by the owner on 2026-10-21 so it comes before the stop orders expire around 2027-01-15). In the first cycle on or after that date, add '## OWNER REVIEW NEEDED (3-month performance review, informational: trading continues)' at the top of this journal, with equity vs the hold-BTC benchmark, total deposits, closed trades (win rate, average result), costs paid and drawdown since 2026-10-17. Keep trading normally; this note does not pause buys. DATA NOTE (resolved 2026-10-19): bin/analyze.py now reports lastc, hi55, volx, brk and atr% from completed candles only. Judge breakouts with those columns; close/%ma/r/rsi reflect the current, possibly unfinished candle. RECURRING DEPOSIT: the owner set up a $200 weekly cash deposit starting the week of 2026-10-19. Each one is routine: log it, add it to total deposits and the benchmark (USD ÷ BTC price at arrival), buy $50 of core BTC in that cycle, and keep $150 as trading cash (25% core share from 2026-10-28; owner decision (k)). Breakout watch levels (completed daily close above hi55 on volx >= 1.5, i.e. brk = Y, then check stop/target/R:R rules; as of 2026-10-19): BTC 87,397; NEAR 6.00; SUI 1.295; AAVE 187.65; AVAX 12.00; BCH 366 (rs30 leaders: NEAR, SUI, BCH, AAVE). The old "deploy $11-15 by 2026-10-20" plan is VOID (cash cap removed, no pullback buys). NEW SETUP (2026-10-18, see CLAUDE.md "Core"): the owner's transferred coins form an untraded core (never sell, no stops). 25% of each new cash deposit (50% before 2026-10-28) buys BTC for the core in the cycle that detects it. Trading equity = total minus core, and all trading limits use it. New entries are BREAKOUTS ONLY (completed close above the prior 55-day high, hi55, on volx >= 1.5; brk = Y), sized at 4% risk of trading equity, speculative up to 50% of trading equity, no coins under 90 days old; no pullback buys. ETH and SOL (pullback entries) keep their stops and targets until they exit. The 10% cash limit is REMOVED, so the $100.51 cash (deposited before the core rule; no retroactive split) is trading cash and can wait for a breakout. EXPECTED TRANSFER: the owner plans to send ~0.25 ETH mid-week of 2026-10-19. An ETH increase of about that size with no matching order is this transfer: log it as an owner in-kind deposit at mark value, add it to total deposits and the benchmark, and add it to the CORE (untraded, no stop). The agent's own 0.016814 ETH stays on the trading side. Stops are GTC for 90 days; re-place them before about 2027-01-15. AVAX has an unverified top-20 rank, so treat it as speculative. Spread is about 1.9% round trip; avoid churn.
+-- Owner decisions (2026-10-17): (k) 2026-10-28: core share of new cash deposits lowered from 50% to 25% (CLAUDE.md owner settings). The account is the owner's experimentation playground; high risk is accepted. From the next deposit: a routine $200 deposit buys $50 of core BTC and adds $150 to trading cash. The existing core is unchanged and stays untraded (it is the control group). (a) place_crypto_order and cancel_crypto_order are allowed in .claude/settings.json. (b) Spread cost acknowledged: count the ~2% round trip in every trade's expected return and favor fewer, longer holds. (c) Only buys and sells count toward the trade caps; protective stop orders do not. (j) 2026-10-19: from the backtest (backtest/RESULTS.md): breakouts are now a completed close above the prior 55-day high (hi55) on volx >= 1.5, risk per new position is 4% of trading equity, the speculative limit is 50% of trading equity (10% when BTC is below its 200d), and no buying coins within 90 days of listing. bin/analyze.py now prints lastc, hi55, brk and age, all from completed candles, which resolves the unfinished-candle note. Existing positions keep their stops and targets. (i) 2026-10-18: Core setup adopted after the backtest (backtest/RESULTS.md, option 4): the transferred BTC (and the incoming ETH) is an untraded core, its $72,000 stop order 6ad40364 was cancelled, 50% of new cash deposits buy core BTC, entries are breakouts only, and the 10% cash cap and its fallback are removed. Decisions (e) on the BTC cap and (f) on the cash cap are superseded. (h) 2026-10-18: added volatility-based stops (at least 1.5x daily ATR), minimum reward (target +8% or more, reward-to-risk 2.5 or more), volume confirmation for breakouts (1.5x or more), ranking by strength against BTC (rs30, then rs7), and a cash-limit fallback (reward-to-risk 1.5). bin/analyze.py now prints atr%, volx, rs7, rs30 and hi20. Apply these to new entries only. (g) 2026-10-18: Trade management section and new limits added to CLAUDE.md (2% risk sizing, limit-order entries, half profit at target, breakeven stop at +8%, trailing stops, BTC 200d filter for speculative coins, BTC benchmark). Existing positions: apply the breakeven, trailing and profit rules from now on; don't resize them retroactively. (f) 2026-10-18: cash cap of 10% of portfolio value added to the CLAUDE.md owner settings, with a 3-day grace period and a waiver while BTC is below its 200d average. (e) 2026-10-17: the owner transferred 0.006829 BTC in as agent capital, tradable per the mandate. Over-cap BTC is held, not trimmed; no new BTC buys until it's under 50%. Transferred lot gets a wide stop at $72,000. (d) Unattended trading approved: a launchd job runs a cycle daily at 17:15 Pacific (just after the 00:00 UTC daily candle close; enforced by bin/daily-gate.sh), and a watcher checks every 30 min, starting a cycle when buying power exceeds journal cash by >$5 or a coin quantity rises with no cycle in between (coin transfer), with a 3h cooldown. Since 2026-10-19, a daily cycle only counts as done once it updates this journal; otherwise it's retried hourly (up to 6 attempts a day). So always update 'Last cycle' in State, even on a halt. The owner gets a Mac notification after every cycle. Keep the 'Cash: $' figure in State accurate, since the watcher compares against it. Logs are in logs/.
++- Owner decisions (2026-10-17): (k) 2026-10-28: core share of new cash deposits lowered from 50% to 25% (CLAUDE.md owner settings). The account is the owner's experimentation playground; high risk is accepted. From the next deposit: a routine $200 deposit buys $50 of core BTC and adds $150 to trading cash. The existing core is unchanged and stays untraded (it is the control group). (a) place_crypto_order and cancel_crypto_order are allowed in .claude/settings.json. (b) Spread cost acknowledged: count the ~2% round trip in every trade's expected return and favor fewer, longer holds. (c) Only buys and sells count toward the trade caps; protective stop orders do not. (j) 2026-10-19: from the backtest (backtest/RESULTS.md): breakouts are now a completed close above the prior 55-day high (hi55) on volx >= 1.5, risk per new position is 4% of trading equity, the speculative limit is 50% of trading equity (10% when BTC is below its 200d), and no buying coins within 90 days of listing. bin/analyze.py now prints lastc, hi55, brk and age, all from completed candles, which resolves the unfinished-candle note. Existing positions keep their stops and targets. (i) 2026-10-18: Core setup adopted after the backtest (backtest/RESULTS.md, option 4): the transferred BTC (and the incoming ETH) is an untraded core, its $72,000 stop order 6ad40364 was cancelled, 50% of new cash deposits buy core BTC, entries are breakouts only, and the 10% cash cap and its fallback are removed. Decisions (e) on the BTC cap and (f) on the cash cap are superseded. (h) 2026-10-18: added volatility-based stops (at least 1.5x daily ATR), minimum reward (target +8% or more, reward-to-risk 2.5 or more), volume confirmation for breakouts (1.5x or more), ranking by strength against BTC (rs30, then rs7), and a cash-limit fallback (reward-to-risk 1.5). bin/analyze.py now prints atr%, volx, rs7, rs30 and hi20. Apply these to new entries only. (g) 2026-10-18: Trade management section and new limits added to CLAUDE.md (2% risk sizing, limit-order entries [superseded 2026-10-29: single market order], half profit at target, breakeven stop at +8%, trailing stops, BTC 200d filter for speculative coins, BTC benchmark). Existing positions: apply the breakeven, trailing and profit rules from now on; don't resize them retroactively. (f) 2026-10-18: cash cap of 10% of portfolio value added to the CLAUDE.md owner settings, with a 3-day grace period and a waiver while BTC is below its 200d average. (e) 2026-10-17: the owner transferred 0.006829 BTC in as agent capital, tradable per the mandate. Over-cap BTC is held, not trimmed; no new BTC buys until it's under 50%. Transferred lot gets a wide stop at $72,000. (d) Unattended trading approved: a launchd job runs a cycle daily at 17:15 Pacific (just after the 00:00 UTC daily candle close; enforced by bin/daily-gate.sh), and a watcher checks every 30 min, starting a cycle when buying power exceeds journal cash by >$5 or a coin quantity rises with no cycle in between (coin transfer), with a 3h cooldown. Since 2026-10-19, a daily cycle only counts as done once it updates this journal; otherwise it's retried hourly (up to 6 attempts a day). So always update 'Last cycle' in State, even on a halt. The owner gets a Mac notification after every cycle. Keep the 'Cash: $' figure in State accurate, since the watcher compares against it. Logs are in logs/.
+ 
+ ## Cycle log
+ ### 2026-10-29 00:25 UTC (scheduled daily cycle, cloud)
