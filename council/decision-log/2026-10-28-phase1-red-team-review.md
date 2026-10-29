@@ -70,7 +70,7 @@ before acting on it.
 ## Risks and mitigations
 - Keyword tripwire may block a legitimate task that quotes an attack (e.g. a
   Red Team brief) → put quoted material in a referenced file, not the envelope.
-- Snapshot goes stale → refresh with `git archive` before each Red Team task.
+- Snapshot goes stale → refresh with `bridge/make_snapshot.sh` (never plain `git archive`) before each Red Team task.
 
 ## What would change our mind
 - An automated broker that can be shown to enforce seat identity at the OS

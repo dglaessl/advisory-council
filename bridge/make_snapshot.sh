@@ -17,7 +17,7 @@ allow=(
   bridge
   external
   .claude/agents
-  council/decision-log/TEMPLATE.md
+  council/decision-log
   council/checkpoints/TEMPLATE.md
 )
 allow+=("$@")

@@ -54,6 +54,7 @@ SEATS = {
     "lead-engineer":    {"agent": "openhands",  "max_perm": "R2"},
     "toolsmith":        {"agent": "goose",      "max_perm": "R3"},
     "red-team":         {"agent": "agent-zero", "max_perm": "R2"},
+    "auditor":          {"agent": "agent-zero", "max_perm": "R1"},
     "venture-crew":     {"agent": "crewai",     "max_perm": "R1"},
     "hospitality-crew": {"agent": "crewai",     "max_perm": "R1"},
     "career-crew":      {"agent": "crewai",     "max_perm": "R1"},
