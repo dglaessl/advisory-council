@@ -1,0 +1,1060 @@
+Neutral
+March 2026
+
+Product Intro
+
+Vanilla is Neutral’s scalable low-rise 
+urban housing solution.
+
+4
+Low-Rise Urban Housing: 
+A Path to Healthy Urban Density
+Low-rise urban housing brings healthy density to cities by promoting a mixed-use community that fosters a 24-hour urban life. This type of development also supports urban mobility and helps to create a more walkable city environment.
+Brooklyn, NY
+Philadelphia, PA
+Berlin
+
+Prohibitive Development Cost
+Too big for small builders, but too small for merchant developers to maximize cost efficiencies.
+
+Financing Constraints
+The sizable capital stack required for small developers acts as a significant barrier to entry, often leading to protracted development timelines that prevent achieving economies of scale. Conversely, merchant developers typically deem these projects too small, preferring larger single-site developments to maximize perceived risk-adjusted returns over aggregating multiple smaller sites. 
+Why aren't they being built?
+
+5
+-> Projects simply don’t pencil.
+
+Componentized construction
+Horizontal integration
+Reduced construction timeline
+Tech integration
+Aggregating multiple sites
+At scale deployment
+
+Unlocking the Financial Feasibility
+6
+Early cost certainty
+Full development control
+Generating alpha
+Automated workflow
+Higher risk adjusted returns
+Economies of scale
+
+GIS Site Evaluation
+The Platform Approach
+Product
+Market Fit
+Aggregate Underwriting
+High Priority Sites
+In-depth Underwriting
+Design 
+Stakeholder
+Capital Formation
+Market Evaluation Pre-entry
+Construction
+Project Completion
+Product Deployment
+
+Property Management Handover
+Deployment At Scale
+
+8
+Full-stack development under one roof
+Neutralø
+NeutraløStudio
+NeutraløBuild
+NeutraløWorkshop
+NeutraløTechnology
+Site acquisition
+Project financing
+Online investment platform
+Wealth advisor partners
+Retail investor network
+Product design
+Architecture and interior design
+Project entitlement and permitting
+Construction management
+Cost estimation and management
+Unique casework
+General carpentry and installation
+Technology backbone for investor portal, carbon accounting, BIM and resident app, etc.
+NeutraløLab
+Carbon accounting
+Life cycle assessment
+Sustainability research
+
+At the core of the platform is the highly standardized yet agile building system.
+
+Urban for-lease properties
+Units per building range from approximately 4-50
+3~6 floors
+Applicable from urban infill sites to masterplan level
+Preferably low parking requirements, or master plan level parking strategies
+High performance, low carbon impacts (embodied and operational)
+
+10
+Product Criteria
+
+11
+Modular Construction
+Full Flexibility
+Bespoke One-off Design
+Vanilla
+Building System
+Highly standardized yet agile system
+Limit to where it can be deployed
+Higher risk late-stage changes
+The Difference
+Rigorous
+Repetition
+
+1) Site-specific Construction that’s dependent on specific site conditions.
+
+2) Componentized construction that can be transferable among different sites.
+
+A Hybrid Building System
+12
+SITE-SPECIFIC
+CONSTRUCTION
+
+X
+MULTIPLE OF X
+Y
+FLEXIBLE
+X Direction
+5-ply CLT panel span
+Typically between 12’ to 13’ 
+
+Y Direction
+Standard CLT panel product width
+Typically 4’ or 1200mm
+Flexible if we trim the panel
+Structural elements are designed to be interchangeable.
+Horizontal Members: CLT, Mass ply, Floor cassettes..
+Vertical Members: CLT, Light gauge steel walls, Wood stud walls, Rammed earth walls..
+Base Planning Dimensions
+13
+
+14
+BATHROOM POD
+PANELIZED WALL
+(EXTERIOR)
+FACADE
+(CONTEXTUAL)
+KITCHEN POD
+WINDOWS
+CLT
+DOOR 
+(HW & INSERT)
+DIMENSION-BASED COMPONENTS
+RULE-BASED COMPONENTS
+PROJECT-SPECIFIC COMPONENTS
+Bathroom Pods
+Kitchen Pods
+Closets
+Panelized Walls
+CLT
+Windows
+Drop Ceiling
+Drywall 
+Floor Finishes
+Exterior/Facade
+Doors
+
+SOFFIT 
+(WITH MEP)
+CLOSETS
+PANELIZED WALL (INTERIOR)
+FLOOR FINISHES
+System Components
+
+15
+BATHROOM POD
+PANELIZED WALL
+(EXTERIOR)
+FACADE
+(CONTEXTUAL)
+KITCHEN POD
+WINDOWS
+CLT
+DOOR 
+(HW & INSERT)
+DIMENSION-BASED COMPONENTS
+RULE-BASED COMPONENTS
+PROJECT-SPECIFIC COMPONENTS
+Bathroom Pods
+Kitchen Pods
+Closets
+Panelized Walls
+CLT
+Windows
+Drop Ceiling
+Drywall 
+Floor Finishes
+Exterior/Facade
+Doors
+
+SOFFIT 
+(WITH MEP)
+CLOSETS
+PANELIZED WALL (INTERIOR)
+FLOOR FINISHES
+System Components
+
+The Power of the Planning Grid
+16
+12’ x 12’ Grid
+
+The Power of the Planning Grid
+
+17
+Forming Rooms
+
+The Power of the Planning Grid
+
+18
+Forming Units
+
+The Power of the Planning Grid
+
+19
+Forming Buildings
+
+The Power of the Planning Grid
+20
+Forming Communities
+
+Vanilla evaluates spatial and financial feasibility before entering a market.
+
+Zoning Requirements
+Max. buildable area
+Improvement Potential
+GIS Site Evaluation
+The Platform Approach
+Market Study 
+AMI & Rental Rates
+Budget Benchmarks
+Operational Cost
+Tax Study
+Product
+Market Fit
+YOC for all suitable sites
+Aggregate Underwriting
+High Priority Sites
+Scenario modeling with unit mix options
+Detailed test-fits
+In-depth Underwriting
+BIM @ LOD 300
+Bill of materials
+SOV
+Entitlement Packages
+Design 
+Supply chain
+Local trade partnerships
+Final entitlement
+Stakeholder
+Capital Formation
+Final financial model
+Debt
+Equity
+Market Evaluation Pre-entry
+IFC package
+Building Permit
+Construction
+Construction
+Project Completion
+Product Deployment
+
+Property Management Handover
+Deployment At Scale
+
+GIS Site Evaluation Process
+23
+City GIS database containing all plots within the city
+Plots with suitable zoning designation
+Plots with high development potential
+high max allowable units subtracting existing dwellings on site
+Plots with highly regular geometry
+Plots allowing by-right development of Vanilla
+
+GIS Site Evaluation in Madison, WI
+24
+Result of all spatially deployable sites in Madison, WI
+Threshold of site regularity can be adjusted based on system flexibility and development preferences.
+
+GIS Site Evaluation in Madison, WI
+
+25
+Site filtering - By Right
+Site filtering - By Conditional Use
+2,673
+Buildable sites by right
+
+9,114
+Sites including CUP
+
+186,836 
+Buildable units
+
+Sites with Suitable Zoning
+26
+
+Filtering for Built Today < Allowed Units
+27
+
+Max Buildable Footprint
+28
+
+Overlaying Planning Modules
+29
+
+Adding Half Modules
+30
+
+Calculating Income & Expenditure
+31
+Rent
+Neighborhood AMI * Target AMI * Rent to Income Ratio (30% Typ.)
+
+Calculating Development Cost
+32
+Hard Cost
+Componentized Construction
+Site-specific Construction
+Bill of Materials Quantity * Unit Price
+Area-based Estimate Area * Unit Price
+Project-based
+one-off cost
+Land Cost
+Land value basis
+The greater of:
+DOR assessed value * Estimated Appreciation Rate,
+or Last Sold Price
++30% Appreciation
+Project Overhead Cost
+Variable Cost
+In-house data + External partner inputs
+Fixed Cost
+In-house data + External partner inputs
+Soft Cost
+
+Calculating Income & Expenditure
+
+33
+OpEx
+Market Property Manager
+Vanilla
+1
+Vanilla 2
+Vanilla 3
+Vanilla 6
+Vanilla 4
+Vanilla 5
+
+City GIS data base
+
+Output: Sites, density, buildable footprint
+
+Detailed building model
+
+Output: Unit mix, building massing, component quantities
+Aggregate Underwriting - Computation
+Step 1
+GIS
+Step 2
+BIM
+
+List of component name, product, quantity, labor, shipping cost.
+
+Output: Hard cost estimate
+Step 3
+BOM
+
+Calculate land cost estimate based on property records and past transactions.
+
+Output: Land cost
+
+Combining hard cost, soft costs.
+
+Output: Initial budget inputs
+Step 4
+LAND VALUE
+Step 5
+COST ESTIMATE
+
+Income from rents, reservation fees and others.
+
+Output: Initial income inputs
+Step 6
+INCOME
+
+Taxes, insurance, OpEx, and others
+
+Output: Initial expense inputs
+
+Cost / debt, capital stack structure
+
+Output: Initial debt inputs and development inputs
+Step 7
+EXPENSE
+Step 8
+CAPITAL STACK
+
+Calculate yield on cost for all sites
+
+Output: Find priority sites
+Step 9
+OUTPUT RESULTS
+
+35
+Aggregate Underwriting - Results 
+
+36
+Aggregate Underwriting - Results 
+
+Proof of Concept - Dashboard
+37
+
+Scalable deployment model
+
+Zoning Requirements
+Max. buildable area
+Improvement Potential
+GIS Site Evaluation
+The Platform Approach
+Market Study 
+AMI & Rental Rates
+Budget Benchmarks
+Operational Cost
+Tax Study
+
+Product
+Market Fit
+YOC for all suitable sites
+Aggregate Underwriting
+High Priority Sites
+Scenario modeling with unit mix options
+Detailed test-fits
+In-depth Underwriting
+BIM @ LOD 300
+Bill of materials
+SOV
+Entitlement Packages
+Design 
+Supply chain
+Local trade partnerships
+Policy alignment
+Stakeholder
+Capital Formation
+Final financial model
+Debt
+Equity
+Market Evaluation Pre-entry
+IFC package
+Building Permit
+Construction
+Construction
+Property Management Handover
+Project Completion
+Product Deployment
+Deployment At Scale
+
+Run different building configurations for better design & yield
+
+Output: Top 3 scenarios for detail pro forma analysis
+
+Automatically run scenarios in a detail  financial model
+
+Output: Top scenario to proceed with
+In-depth Underwriting Computation
+Step
+Output
+Inputs for Next Step
+Step 1 GIS 
+Map of GIS (Locations)
+Sites, Density, Buildable footprint 
+Step 2 BIM 
+Unit Mix, Building Massing, Component Count
+Cost to Build for BOM (Hard Cost)
+Step 3 BOM (Bill of Materials)  
+Breakdown of all the building materials 
+Hard Cost based on historical data 
+Step 4 Land Value 
+Estimated Land Value
+Land Cost
+Step 5 Cost Estimation 
+Other Costs, Hard Costs from step 3, Soft Costs
+Initial “Budget Inputs” 
+Step 6 Income
+Income from Rents, Reservation Fees, Other
+Initial “Income Inputs”
+Step 7 Expenses
+Taxes, Insurance, OpEx, Other
+Initial “Expense Inputs”
+Step 8 Capital Stack
+Cost/Debt, Capital Stack
+Initial “Debt Inputs” & “Development Inputs”
+Results 
+YOC 
+Find Priority Parcels
+Step 1
+SCENARIOS
+Step 2
+PROFORMA
+
+Refine yield & design for top scenario
+
+Output: Hard cost based on final design and trade inputs
+Step 3
+BOM
+
+Negotiate land price with Seller
+
+Output: Final Land basis
+
+Finalize Soft Costs and other costs based on further analysis 
+
+Output: Final “budget inputs”
+
+Step 4
+LAND VALUE
+Step 5
+COST ESTIMATE
+
+Finalize Income Inputs based on refined data
+
+Output: Final “income inputs”
+Step 6
+INCOME
+
+Finalize expense based on refined data and obtain third party tax study 
+
+Output: Final “expense inputs”
+
+Obtain debt term sheets and begin loan negotiations 
+
+Output: Final debt inputs and development inputs
+Step 7
+EXPENSE
+Step 8
+CAPITAL STACK
+
+Final Financial Model to present to IC  
+
+Output: Investment-ready project to fund and commence 
+Step 9
+OUTPUT RESULTS
+
+Continuous Model Computation
+Step
+Output
+Inputs for Next Step
+Step 1 GIS 
+Map of GIS (Locations)
+Sites, Density, Buildable footprint 
+Step 2 BIM 
+Unit Mix, Building Massing, Component Count
+Cost to Build for BOM (Hard Cost)
+Step 3 BOM (Bill of Materials)  
+Breakdown of all the building materials 
+Hard Cost based on historical data 
+Step 4 Land Value 
+Estimated Land Value
+Land Cost
+Step 5 Cost Estimation 
+Other Costs, Hard Costs from step 3, Soft Costs
+Initial “Budget Inputs” 
+Step 6 Income
+Income from Rents, Reservation Fees, Other
+Initial “Income Inputs”
+Step 7 Expenses
+Taxes, Insurance, OpEx, Other
+Initial “Expense Inputs”
+Step 8 Capital Stack
+Cost/Debt, Capital Stack
+Initial “Debt Inputs” & “Development Inputs”
+Results 
+YOC 
+Find Priority Parcels
+
+42
+Financial Modeling Updating
+NetSuite  Income/Expense
+Neural Investor Portal
+Autodesk Cloud Budget
+Pro-forma
+Computation
+Investor Returns
+Project Reports
+Waterfall & Cashflow
+Data
+Inputs
+Output To Investor’s Dashboard
+Repeated every quarter
+Data Conversion
+…
+Budget
+Capital
+Income
+Expense
+
+We brought the first Vanilla to life at 517 W Main St in Madison.
+
+Project Status:
+Residential Units
+Residential Sq Ft: 
+Retail Program:
+Parking:
+Unit Types
+Completion in Dec 2025
+33
+24,716
+  Neighborhood Cafe
+17 reserved + 1 car share
+Studio to 2BR
+517 W Main
+44
+
+Fully stacked plumbing system across kitchens & bathrooms
+Repeated floor plans
+Exposed CLT in all living rooms and bedrooms
+2 standard kitchen layouts plus 1 accessible variation
+2 standard bathroom layouts plus 1 powder room layout and 1 accessible variation
+
+System Implementation
+517 Typical Plan
+45
+
+1 BEDROOM
+1 BEDROOM
+46
+Unit Plans
+STUDIO
+703 SF
+844 SF
+507 SF
+
+47
+2 BEDROOM
+2 BEDROOM
+1 BEDROOM PLUS
+Unit Plans
+1082 SF
+1201 SF
+1034 SF
+
+48
+Brick Façade 
+
+49
+Brick Façade 
+
+Unit Interior
+
+51
+CLT Wardrobe by Neutral Workshop
+
+52
+Unit Living Area
+
+53
+Unit Living Area
+
+54
+Lobby
+
+Street Facade
+For scopes off the critical path, we are able to celebrate the local craftsmanship by introducing hand-laid brick facade and bespoke micro CLT casework.
+
+56
+Construction Milestones
+February
+02/20/2025 
+
+Completion of basement
+September
+09/17/2024 
+
+Ground
+Breaking
+April 
+04/16/2025 
+
+Structure top-out
+December
+12/10/2025 
+
+Projected
+CO
+Superstructure
+[22 working days]
+
+LOD 400
+Model 
+57
+Highly detailed model showing structural stud location, slab and wall penetrations
+Automatically generated quantity take-off and material schedule
+Detailed clash detection at design stage to avoid on-site issues.
+
+Bill of Materials
+58
+Example of kitchen casework bill of materials
+Example of shipping cost database
+
+3-4 months 
+entitlement and permitting
+6-8 months 
+construction on site
+Timeline target
+1 year from purchase to welcoming tenants
+1 month 
+survey and design adaptation
+
+Neutral’s 
+Investment Engine 
+
+Retail investors can pick and fund their investments online. Track their portfolio, receive tax documents, and investor reports — all in one place.
+Easy and transparent 
+retail investing
+
+Empower financial advisors with a dedicated, co-branded portal designed for managing client investments in our projects. The advisor portal streamlines alternative allocations, centralizing client investments, portfolios, and essential documents for easy tracking.
+
+Alternative 
+real estate 
+made simple 
+for advisors 
+
+NOIbase Formula Input 
+66
+Metric
+Target
+Implication
+Variable
+Description / Formula 
+Example
+Effective Gross Income  
+EGI = (PSF (Per Square Foot) x UASF (Unit Average Square Foot)) x 1+OIR (Other Income Ratio) 
+I = $3.5 x 750
+   I = $2,625
+     I = $2,625 x 1+10% 
+        I = $2,887
+Expense 
+E = O (Opex) + T (Taxes) + I (Insurance) 
+P5 = (15%*2,887) + (10%*2,887) + (5%*2,887)
+    P5 = $866
+Unit Count 
+UC = Unit Count
+UC = 50 
+NOIbase
+
+NOI = ((EGI - E) x UC) x 12
+
+NOI = ($2,887 - $866) x 50
+   NOI = $101,050.00 x 12 
+     NOI = $1,212,600.00
+
+YOC Formula Input
+67
+Metric
+Target
+Implication
+Variable
+Description / Formula 
+Example
+NOIbase
+NOIbase = ((EGI - E) x UC) x 12
+ 
+NOI = ($2,887 - $866) x 50
+   NOI = $101,050.00 x 12 
+     NOI = $1,212,600.00
+YOCbase1
+ 
+YOCbase = NOIbase / C1
+YOCbase = $1,212,600.00 / $20,000,000
+      YOCbase = 6.06%
+YOC>NOI
+YOC>NOI = C1 *Target YOC
+YOC>NOI = $20,000,000 * 6.5% 
+     YOC>NOI = $1,300,000.00
+YOC>C1
+
+YOC>C1 = (NOI / Target YOC ) 
+YOC>C1 = ($1,212,600.00 / 6.5%) 
+   YOC>C1 = $18,655,384.62 
+
+MOIC Formula 
+68
+Metric
+Target
+Implication
+Variable
+Description / Formula 
+Example
+Annual Cash Flow
+ACF = (C1 x YOC) - (D0 x rD)
+ACF = ($20,000,000 x 0.065 - 12,000,000 x 0.045)
+         ACF = $1,300,000 - $540,000
+              ACF = $760,000 (after debt service) 
+
+Sale Price
+P5 =NOI{base} x (1 + rComp)^n / CR
+P5 = $1,300,000 x (1 + 0.03)^5 
+    P5 = 1,504,508.95 /  5%
+      P5 = $30,090,179.00
+
+Net Sale Proceeds 
+NSP = P5 - D0
+
+NSP= $30,090,179.00 - $12,000,000
+   NSP = $18,090,179.00
+
+MOIC
+MOIC= ACF x n (hold) + NSP / E0 (equity)
+MOIC = $760,000  x 5 + $18,090,179 
+    MOIC = $19,000,179 / $8,000,000
+       MOIC = 2.74x
+
+IRR Formula 
+69
+Metric
+Target
+Implication
+Variable
+Description / Formula 
+Example
+Annual Cash Flow
+ACF = (C1 x YOC) - (D0 x rD)
+ACF = ($20,000,000 x 0.065 - 12,000,000 x 0.045)
+         ACF = $1,300,000 - $540,000
+              ACF = $760,000
+
+Sale Price
+P5 =NOI{base} x (1 + rComp)^n / CR
+P5 = $1,300,000 x (1 + 0.03)^5 
+    P5 = 1,504,508.95 /  5%
+      P5 = $30,090,179.00
+
+Net Sale Proceeds 
+NSP = P5 - D0
+
+NSP= $30,090,179.00 - $12,000,000
+   NSP = $18,090,179.00
+
+IRR
+IRR = -E0 + ∑ (ACF / (1 + IRR)^t )+ (ACF + NSP / (1 + IRR)^n)
+IRR = $8,000,000 + ∑ $760,000 / (1 + IRR)^t} + $18,850,179 (1 + IRR)^5
+       IRR = 22.34%
+
+Company Overview
+
+Bakers
+Place
+71
+
+Neutral has successfully completed the construction of a 206-unit multifamily development in Madison, WI—Bakers Place—on time and on budget.
+
+Leasing has started in May, 2025
+
+Bakers Place
+
+Neutral has successfully completed the construction of a 206-unit multifamily development in Madison, WI—Bakers Place—on time and on budget.
+
+Leasing has started in May, 2025
+
+Bakers Place
+
+74
+517 W Main
+
+75
+517 W Main
+
+Edison
+76
+
+First-of-its-kind 3-hour fire test passed — glulam assembly with standard concealed connectors, equivalent to IBC Type I-A (SwRI, 2025)
+
+The Bloom
+78
+
+The Elks
+79
+
+Marcus Center
+80
+
+Brayton Lot
+81
+
+North Bayshore Masterplan
+82
+
+Mass 
+Timber
+
+First-of-its-kind 3-hour fire test passed — glulam assembly with standard concealed connectors, equivalent to IBC Type I-A (SwRI, 2025)
+
+Exposed 5-ply CLT mass timber ceiling (60% of floor area) did not produce room flashover under NFPA 286 testing — only 1 of 5 flashover criteria met (FPL, 2023)
+
+Neutral and Nathan Helbach Co-authored WoodWorks Mass Timber Insurance Playbook — industry reference for underwriting mass timber construction insurance. 
+
+Created Mass Timber Moisture Management Plan with RDH Building Science. To create  project-specific protocols addressing the #1 operational risk in mass timber construction - water.
+
+Nathan Helbach  serves on the ULI Mass Timber Council — developing an Agentic AI-powered resource to help developers evaluate mass timber feasibility, design trade-offs, and project economics
+
+Cradle-to-grave whole-building LCA: hybrid mass timber-steel structure achieves 330 kg CO₂eq/m² — 12% lower GWP than functionally equivalent concrete design 
+
+(Univ. of New Brunswick & USDA Forest Products Lab, 2025)
+
+Org Charts
+
+91
+Steering Layer
+Nathan Helbach
+Daniel Glaessl
+Neutral Build LLC
+(Construction)
+Neutral Workshop LLC
+(Supply & Manufacture)
+Neutral Tech
+(Technology)
+Leadership Layer
+Neutral Invest LLC
+(Fund Management)
+Neutral Hospitality 
+(User Experience)
+Neutral Studio LLC
+(Product)
+Jon Schumacher(TBD)
+Technology
+Scott Zimmerman
+Construction
+Don Williams
+Supply Chain & Manufacturing
+Jan Van Zuijlen (TBD)
+Investment 
+Yue Shao
+Product & Design
+Fed Novikov 
+Marketing & Strategy & UX
+Platform Layer
+- Provides construction management services to individual projects
+- Feeds cost and construction data into platform development
+- For some markets collaborates with Third Party CM 
+- Manufacturing and install of “mission critical” product components (e.g. specialist carpentry)
+- Liaises with third party building component suppliers
+- For some markets collaborates with local trades / supervision
+- Provides technology development services to both projects and other platform entities 
+- Provides technology to realize product scalability and schedule goals
+- Establishes and administers Evergreen Fund I
+- Capitalizes and carries projects until exit 
+- Liaises with Stoneweg finance team for project proformas
+- Defines UX standards for Neutral buildings
+- Collaborates closely with Third Party property management firm (e.g. Sentral)
+- Develops health and wellness products to feed into retail programs
+- Leads holistic product & platform development 
+- Provides design and AOR services to individual projects
+- Advances system development to drive scale, schedule and cost 
+Horizontal Integration
+
+Neutral 
+Wholly 
+Owned 
+Subsidiary
+Org Chart  
+Neutral Project LLC
+(Operating Company)
+Neutral Build LLC
+(Construction)
+Neutral Workshop LLC
+(Supply & Manufacture)
+Neutral Studio LLC
+(Product)
+
+Neutral Project LLC
+Neutral  
+Manager
+Org Chart
+Bakers Place Sponsor LLC
+(a Wisconsin Company)
+The Edison Sponsor LLC
+(a Wisconsin Company)
+Vanilla 301 LLC
+(a Wisconsin Company)
+Bakers Place Project LLC
+(a Wisconsin Company)
+The Edison Project LLC
+(a Wisconsin Company)
+Its Manager
+Managers broken down on next slide
+Its Manager
+Its Manager
+Its Manager
+
+Bakers Place
+Org Chart
+Bakers Place Sponsor LLC
+(a Wisconsin LLC)
+Bakers Place SPE, LLC
+(Mortgagee a Delaware LLC)
+Bakers Place Holding SPE, LLC
+(a Delaware LLC)
+Bakers Place Project, LLC
+(a Wisconsin LLC)
+Its Manager
+Frazer Bakers Place Sponsor LLC
+(a Wisconsin Company)
+33.33%
+Vario Sponsor LLC
+(a Wisconsin Company)
+33.33%
+Neutral Project LLC
+(a Wisconsin Company)
+33.33%
+
+The Edison Sponsor LLC
+(a Wisconsin LLC)
+The Edison SPE, LLC
+(Mortgagee a Delaware LLC)
+The Edison Holding SPE, LLC
+(a Delaware LLC)
+The Edison Project Holding, LLC
+(a Delaware LLC)
+The Edison Project, LLC
+(a Wisconsin LLC)
+Its Manager
+The Neutral Project LLC
+(a Wisconsin LLC)
+The Edison
+Org Chart
+
+The Neutral Project LLC
+(a Wisconsin LLC)
+Vanilla 301 SPE, LLC
+(Mortgagee a Wisconsin LLC
+Vanilla 301 Holding SPE, LLC
+(a Wisconsin LLC)
+Vanilla 301, LLC
+(a Wisconsin LLC
+Its Manager
+517 W Main
+Org Chart
+
+Vanilla 251 SPE, LLC
+(Mortgagee a Wisconsin LLC
+Vanilla 251, LLC
+(a Wisconsin LLC
+Vanilla 251 Holding SPE, LLC
+(a Wisconsin LLC)
+329 S Duncan 
+Org Chart
+Vanilla 251 Sponsor LLC
+(a Wisconsin LLC)
+Its Manager
+Hanna Family Development 
+50.00%
+Neutral Project LLC
+(a Wisconsin Company)
+50.00%
+
+Let’s build together.
