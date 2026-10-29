@@ -1,0 +1,21 @@
+{
+  "task_id": "2026-10-29-career-smoke-01",
+  "target_seat": "career-crew",
+  "agent": "crewai",
+  "objective": "Map 3-5 testable offers combining AI expertise with Daniel's domains",
+  "input_context": [
+    "notes/skills-snapshot.md"
+  ],
+  "constraints": [
+    "analysis only: do not publish, change prices or contact anyone",
+    "public information and Daniel's own notes only, no employer-confidential material"
+  ],
+  "permission_level": "R1",
+  "expected_output": "CareerResult JSON plus a memo of at most 300 words",
+  "done_when": [
+    "3-5 offers, each priced with a cheapest test",
+    "every offer has an employment-conflict check"
+  ],
+  "independent_draft": true,
+  "reply_to": "council/outbox/chair/"
+}

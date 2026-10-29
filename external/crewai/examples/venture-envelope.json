@@ -1,0 +1,21 @@
+{
+  "task_id": "2026-10-29-venture-smoke-01",
+  "target_seat": "venture-crew",
+  "agent": "crewai",
+  "objective": "Brainstorm 2-4 options for an agent-driven side business outside Daniel's employer's field",
+  "input_context": [
+    "notes/side-business-ideas.md"
+  ],
+  "constraints": [
+    "analysis only: do not publish, change prices or contact anyone",
+    "public information and Daniel's own notes only, no employer-confidential material"
+  ],
+  "permission_level": "R1",
+  "expected_output": "VentureResult JSON plus a memo of at most 300 words",
+  "done_when": [
+    "2-4 options, each with a cheapest first test",
+    "every option has an employment-conflict check"
+  ],
+  "independent_draft": true,
+  "reply_to": "council/outbox/chair/"
+}

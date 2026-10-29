@@ -1,0 +1,21 @@
+{
+  "task_id": "2026-10-29-hospitality-smoke-01",
+  "target_seat": "hospitality-crew",
+  "agent": "crewai",
+  "objective": "Review pricing, listing and agency performance for Casa La Fonte and propose tests",
+  "input_context": [
+    "notes/casa-la-fonte-summary.md"
+  ],
+  "constraints": [
+    "analysis only: do not publish, change prices or contact anyone",
+    "public information and Daniel's own notes only, no employer-confidential material"
+  ],
+  "permission_level": "R1",
+  "expected_output": "HospitalityResult JSON plus a memo of at most 300 words",
+  "done_when": [
+    "every proposal is marked as needing Daniel's approval",
+    "comps have sources and dates"
+  ],
+  "independent_draft": true,
+  "reply_to": "council/outbox/chair/"
+}
