@@ -293,6 +293,14 @@ The Red Team sits on every engagement that ends in a recommendation.
 8. **Teach.** AI Tutor adds a short "what this engagement teaches" note
    when there is a real lesson.
 
+**Agenda.** The council meets every second Saturday and the agenda is
+settled the day before. Daniel sets the items. Every seat may also propose
+items, especially risks, opportunities or angles Daniel may not be seeing
+(Daniel's request, 2026-10-28). The Chair lists the strongest 3–5 under
+"Proposed by the council", each with the proposing seat and a one-line
+reason. Daniel keeps or drops them. Proposals never replace or reword
+Daniel's items.
+
 **State checkpoints:** after every major phase, write a checkpoint to the
 shared memory layer (via Hermes). If files and plan drift apart, halt,
 re-sync, and tell Daniel what diverged.
