@@ -1,0 +1,2 @@
+# OPTIONAL web search (off by default). Installed only with: ./run.sh --build --with-search
+crewai-tools==1.15.33

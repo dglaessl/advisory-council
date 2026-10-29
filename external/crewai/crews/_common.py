@@ -40,7 +40,8 @@ DEFAULT_MODEL = "openrouter/openai/gpt-6-luna"
 MAX_CONTEXT_FILE_BYTES = 60_000
 MAX_CONTEXT_TOTAL_BYTES = 200_000
 CREW_DIR = Path(__file__).resolve().parent
-REPO_ROOT_GUESS = CREW_DIR.parents[2]  # external/crewai/crews -> repo root
+_P = CREW_DIR.parents
+REPO_ROOT_GUESS = _P[2] if len(_P) > 2 else CREW_DIR  # external/crewai/crews -> repo root
 
 
 # ---------------------------------------------------------------- envelope

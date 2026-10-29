@@ -1,0 +1,5 @@
+# CrewAI strategy panels. Pinned 2026-10-28.
+# crewai 1.15.33 = latest on PyPI (uploaded 2026-10-28, https://pypi.org/project/crewai/).
+# Needs Python >=3.10,<3.14. OpenRouter is a native provider in 1.15.x: no litellm extra needed.
+# Transitive versions are pinned in constraints.txt (pip freeze of a tested install).
+crewai==1.15.33

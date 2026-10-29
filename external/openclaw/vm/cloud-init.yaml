@@ -1,0 +1,266 @@
+#cloud-config
+# Field Scout (OpenClaw) - quarantined VM. Ubuntu 24.04 LTS.
+# Paste this whole file into the provider's "User data" box.
+# Before pasting, replace SSH_PUBLIC_KEY_HERE and COURIER_PUBLIC_KEY_HERE
+# (see README.md). This file contains no secrets: the OpenRouter key is
+# entered after boot with `scout-set-key`; the UI token is generated on boot.
+#
+# Pinned: OpenClaw 2026.10.8 (container image). See README.md for sources.
+
+hostname: field-scout
+package_update: true
+package_upgrade: true
+packages:
+  - ufw
+  - unattended-upgrades
+  - docker.io
+  - docker-compose-v2
+  - rsync
+  - openssl
+
+ssh_pwauth: false
+disable_root: true
+
+users:
+  # Admin login. SSH key only, no password.
+  - name: scout
+    uid: "1001"
+    shell: /bin/bash
+    lock_passwd: true
+    sudo: "ALL=(ALL) NOPASSWD:ALL"
+    ssh_authorized_keys:
+      - SSH_PUBLIC_KEY_HERE
+  # Owns OpenClaw's data. Matches uid 1000 inside the container. No login.
+  - name: openclaw
+    uid: "1000"
+    shell: /usr/sbin/nologin
+    lock_passwd: true
+    homedir: /srv/openclaw
+  # Read-only pickup of findings by the Chair (rsync, read-only, one folder).
+  - name: courier
+    uid: "1002"
+    shell: /bin/sh
+    lock_passwd: true
+    ssh_authorized_keys:
+      - 'command="/usr/bin/rrsync -ro /srv/openclaw/scout-inbox/",restrict COURIER_PUBLIC_KEY_HERE'
+
+write_files:
+  - path: /etc/ssh/sshd_config.d/10-council-hardening.conf
+    content: |
+      PasswordAuthentication no
+      KbdInteractiveAuthentication no
+      PermitRootLogin no
+      AllowUsers scout courier
+      AllowTcpForwarding local
+      AllowAgentForwarding no
+      X11Forwarding no
+
+  - path: /etc/apt/apt.conf.d/20auto-upgrades
+    content: |
+      APT::Periodic::Update-Package-Lists "1";
+      APT::Periodic::Unattended-Upgrade "1";
+
+  - path: /etc/apt/apt.conf.d/52council-reboot
+    content: |
+      Unattended-Upgrade::Automatic-Reboot "true";
+      Unattended-Upgrade::Automatic-Reboot-Time "04:30";
+
+  - path: /etc/docker/daemon.json
+    content: |
+      {
+        "no-new-privileges": true,
+        "log-driver": "local",
+        "log-opts": { "max-size": "20m", "max-file": "3" }
+      }
+
+  # Containers may reach the internet, but not private networks or the
+  # cloud metadata service.
+  - path: /usr/local/sbin/council-egress-rules
+    permissions: "0755"
+    content: |
+      #!/bin/sh
+      set -e
+      for net in 10.0.0.0/8 192.168.0.0/16 169.254.0.0/16 100.64.0.0/10; do
+        for ifc in docker0 br-+; do
+          iptables -C DOCKER-USER -i "$ifc" -d "$net" -j DROP 2>/dev/null \
+            || iptables -I DOCKER-USER -i "$ifc" -d "$net" -j DROP
+        done
+      done
+
+  - path: /etc/systemd/system/council-egress.service
+    content: |
+      [Unit]
+      Description=Block containers from private networks and cloud metadata
+      After=docker.service
+      Requires=docker.service
+      PartOf=docker.service
+      [Service]
+      Type=oneshot
+      RemainAfterExit=yes
+      ExecStart=/usr/local/sbin/council-egress-rules
+      [Install]
+      WantedBy=docker.service multi-user.target
+
+  # OpenClaw runs in one container. UI published on 127.0.0.1 only.
+  # Inside the container the gateway must bind "lan" (OpenClaw docs);
+  # the 127.0.0.1 publish below is what keeps it off the internet.
+  # No docker.sock, no home directory, no other mounts.
+  - path: /opt/openclaw/compose.yaml
+    content: |
+      services:
+        gateway:
+          image: ghcr.io/openclaw/openclaw:2026.10.8
+          container_name: openclaw
+          restart: unless-stopped
+          init: true
+          user: "1000:1000"
+          env_file:
+            - /etc/openclaw/gateway.env
+            - /etc/openclaw/openrouter.env
+          environment:
+            HOME: /home/node
+            OPENCLAW_HOME: /home/node
+            OPENCLAW_STATE_DIR: /home/node/.openclaw
+            OPENCLAW_CONFIG_PATH: /home/node/.openclaw/openclaw.json
+            OPENCLAW_WORKSPACE_DIR: /home/node/.openclaw/workspace
+            OPENCLAW_CONFIG_READONLY: "1"
+            OPENCLAW_DISABLE_BONJOUR: "1"
+            TZ: UTC
+          volumes:
+            - /srv/openclaw/state:/home/node/.openclaw
+            - /srv/openclaw/scout-inbox:/home/node/.openclaw/workspace/scout-inbox
+            - /opt/openclaw/policy:/opt/openclaw-policy:ro
+          ports:
+            - "127.0.0.1:18789:18789"
+          cap_drop: [ALL]
+          security_opt: ["no-new-privileges:true"]
+          mem_limit: 3g
+          pids_limit: 512
+          command: ["node", "dist/index.js", "gateway", "--bind", "lan", "--port", "18789"]
+
+  # OpenClaw config (copied into the state folder on first boot).
+  # Key points: token auth; exec denied and runtime tools removed; terminal
+  # off; no skills; self-learning off; every skill/plugin install blocked by
+  # the install policy below; risky bundled plugins denied; file tools
+  # limited to the workspace.
+  - path: /opt/openclaw/openclaw.json
+    content: |
+      {
+        "gateway": {
+          "mode": "local",
+          "bind": "lan",
+          "port": 18789,
+          "auth": { "mode": "token", "token": "${OPENCLAW_GATEWAY_TOKEN}" },
+          "controlUi": { "allowedOrigins": ["http://localhost:18789", "http://127.0.0.1:18789"] },
+          "terminal": { "enabled": false }
+        },
+        "agents": {
+          "defaults": {
+            "model": { "primary": "openrouter/auto" },
+            "skills": []
+          }
+        },
+        "skills": {
+          "allowBundled": [],
+          "install": { "allowUploadedArchives": false },
+          "workshop": { "autonomous": { "mode": "off" } }
+        },
+        "tools": {
+          "profile": "minimal",
+          "alsoAllow": ["web_fetch", "read", "write", "edit"],
+          "deny": ["group:runtime", "group:automation", "group:ui", "group:nodes",
+                   "group:messaging", "apply_patch", "sessions_spawn", "sessions_send", "gateway"],
+          "fs": { "workspaceOnly": true },
+          "exec": { "mode": "deny" },
+          "elevated": { "enabled": false },
+          "agentToAgent": { "enabled": false }
+        },
+        "plugins": {
+          "deny": ["imap", "onepassword", "vault", "github", "telegram", "browser",
+                   "cua-computer", "linux-node", "file-transfer"]
+        },
+        "security": {
+          "installPolicy": {
+            "enabled": true,
+            "exec": {
+              "source": "exec",
+              "command": "/usr/local/bin/node",
+              "args": ["/opt/openclaw-policy/deny-all.mjs"],
+              "timeoutMs": 10000
+            }
+          }
+        }
+      }
+
+  # Install policy: refuse every skill and plugin install.
+  - path: /opt/openclaw/policy/deny-all.mjs
+    permissions: "0644"
+    content: |
+      let input = "";
+      process.stdin.on("data", (c) => { input += c; });
+      process.stdin.on("end", () => {
+        process.stdout.write(JSON.stringify({
+          protocolVersion: 1,
+          decision: "block",
+          reason: "Field Scout quarantine: skill and plugin installs are disabled. Daniel installs reviewed items by hand."
+        }));
+      });
+
+  - path: /etc/systemd/system/openclaw.service
+    content: |
+      [Unit]
+      Description=OpenClaw Field Scout (Docker)
+      Requires=docker.service council-egress.service
+      After=docker.service council-egress.service network-online.target
+      [Service]
+      Type=oneshot
+      RemainAfterExit=yes
+      ExecStart=/usr/bin/docker compose -f /opt/openclaw/compose.yaml up -d
+      ExecStop=/usr/bin/docker compose -f /opt/openclaw/compose.yaml down
+      TimeoutStartSec=600
+      [Install]
+      WantedBy=multi-user.target
+
+  # Daniel runs this once after boot. Hidden input; key never in history.
+  - path: /usr/local/sbin/scout-set-key
+    permissions: "0755"
+    content: |
+      #!/bin/bash
+      set -euo pipefail
+      [ "$(id -u)" = 0 ] || exec sudo "$0" "$@"
+      read -rsp "Paste the Field Scout OpenRouter key (input hidden): " KEY; echo
+      case "$KEY" in sk-or-*) ;; *) echo "Not an OpenRouter key (expected sk-or-...). Nothing saved."; exit 1;; esac
+      umask 077
+      printf 'OPENROUTER_API_KEY=%s\n' "$KEY" > /etc/openclaw/openrouter.env
+      unset KEY
+      chmod 600 /etc/openclaw/openrouter.env
+      docker compose -f /opt/openclaw/compose.yaml up -d --force-recreate
+      echo "Saved to /etc/openclaw/openrouter.env (root only). OpenClaw restarted."
+
+  # Shortcut for OpenClaw's own CLI inside the container: `scout-oc doctor`
+  - path: /usr/local/bin/scout-oc
+    permissions: "0755"
+    content: |
+      #!/bin/sh
+      exec sudo docker exec -it openclaw node dist/index.js "$@"
+
+runcmd:
+  - mkdir -p /etc/openclaw /srv/openclaw/state/workspace /srv/openclaw/scout-inbox
+  - chmod 700 /etc/openclaw
+  - '[ -s /etc/openclaw/gateway.env ] || printf "OPENCLAW_GATEWAY_TOKEN=%s\n" "$(openssl rand -hex 32)" > /etc/openclaw/gateway.env'
+  - touch /etc/openclaw/openrouter.env
+  - chmod 600 /etc/openclaw/gateway.env /etc/openclaw/openrouter.env
+  - chown -R 1000:1000 /srv/openclaw
+  - chmod 755 /srv/openclaw /srv/openclaw/scout-inbox
+  - '[ -e /srv/openclaw/state/openclaw.json ] || install -o root -g root -m 0644 /opt/openclaw/openclaw.json /srv/openclaw/state/openclaw.json'
+  - chmod 755 /opt/openclaw /opt/openclaw/policy
+  - ufw default deny incoming
+  - ufw default allow outgoing
+  - ufw limit 22/tcp
+  - ufw --force enable
+  - systemctl restart ssh
+  - systemctl daemon-reload
+  - systemctl enable --now docker council-egress.service
+  - systemctl enable --now openclaw.service
+
+final_message: "Field Scout VM ready after $UPTIME s. Next: ssh scout@<ip>, then run scout-set-key."
