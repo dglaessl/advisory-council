@@ -97,6 +97,22 @@ Phase 1** (decision log 2026-10-28).
       *Phase 2:* automate the broker against Agent Zero's authenticated
       External API, running as its own OS user.
 
+### 4b. Auditor (Gemini) — same Agent Zero container, own profile
+Added 2026-10-28. No new container, key or mount: the Auditor is a second
+Agent Zero profile with its own model preset.
+- [ ] Profile: `~/council/agent-zero-data/agents/auditor/` with `agent.yaml`
+      and `prompts/agent.system.main.specifics.md` (copy of
+      `external/agent-zero/auditor-system-prompt.md`).
+- [ ] Preset "Gemini" in `~/council/agent-zero-data/plugins/_model_config/presets.yaml`:
+      chat `openrouter / google/gemini-4-argon` (ctx 1,000,000), utility
+      `openrouter / google/gemini-3.8-flash`, embedding unchanged.
+- [ ] Per chat, pick profile **Auditor** and preset **Gemini** in the chips
+      under the input box. The default profile stays `red-team` on GPT;
+      never run the Red Team on the Gemini or Power (Claude) presets.
+- [ ] Check: ask it to name its model; it should say Gemini.
+- [ ] Spend: long-context audits are the expensive calls; keep OpenRouter's
+      key limit as the cap.
+
 > Red Team review 2026-10-28 (decision log): the bridge's forbidden-action
 > filter is a **tripwire for honest mistakes, not a security boundary** —
 > any wording can be paraphrased. What actually prevents harm is that no

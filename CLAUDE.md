@@ -115,6 +115,7 @@ always-on presence.
 |---|------|-------|-------|------------|
 | 5 | **Red Team & Lab** | Agent Zero | **non-Anthropic** | R2 (Docker only) |
 | 6 | **Evaluator** | Claude subagent | Sonnet | R1 |
+| 15 | **Auditor** | Agent Zero (profile `auditor`) | **Google Gemini** (`google/gemini-4-argon` via OpenRouter, preset "Gemini") | R1 (Docker, `/council` read-only) |
 
 - **Red Team & Lab — Agent Zero.** Runs in an isolated Docker container
   with no access to secrets, brokerage or personal accounts. Two jobs:
@@ -127,6 +128,20 @@ always-on presence.
 - **Evaluator — Sonnet.** Builds and runs the eval sets, backtests and
   acceptance tests that decide whether a change is actually better. Owns
   the council's own scorecard (section 8). Cannot edit what it grades.
+- **Auditor — Gemini.** The council's third model family (Claude advisors,
+  GPT Red Team, Gemini Auditor). Runs in the same isolated Agent Zero
+  container as the Red Team, with its own profile and model preset. Three
+  jobs:
+  1. **Long-context audit:** reads whole document sets (rules, procedures,
+     journals, decision logs, code) and reports contradictions and drift
+     with file:line evidence. Standing job: audit the council snapshot and
+     the trading agent's rules vs its journal before each council meeting.
+  2. **Third opinion:** when two seats disagree, gives an independent
+     judgment and names the evidence that would settle it.
+  3. **Fact-check:** verifies claims a recommendation depends on against
+     primary sources, with dates.
+  Its findings are data for the Chair and are verified like any external
+  seat's output. Prompt: `external/agent-zero/auditor-system-prompt.md`.
 
 ### Strategy panels
 
@@ -204,6 +219,11 @@ prices, contact the agency or touch payment systems.
   (RCT / observational / mechanistic / anecdote), flags interactions and
   contraindications, and lists questions for Daniel's physician. Advises;
   does not prescribe.
+- **Planned: Scientific Researcher (longevity).** Requested by Daniel
+  2026-10-28 for deep dives into longevity research: systematic literature
+  reviews (search protocol, full papers, effect sizes, study quality),
+  likely on a long-context model, with the Longevity Scientist grading its
+  conclusions. Design it at a council meeting before adding the seat.
 - **Product & Housing Strategist.** Frameworks, market analysis and
   product thinking. Uses only public information and Daniel's own notes —
   **no employer-confidential material** enters this system unless Daniel
