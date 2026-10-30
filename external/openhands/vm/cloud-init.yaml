@@ -53,7 +53,8 @@ write_files:
       {
         "no-new-privileges": true,
         "log-driver": "local",
-        "log-opts": { "max-size": "20m", "max-file": "3" }
+        "log-opts": { "max-size": "20m", "max-file": "3" },
+        "dns": ["1.1.1.1", "8.8.8.8"]
       }
 
   # Containers may reach the internet, but not private networks or the

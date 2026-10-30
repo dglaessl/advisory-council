@@ -43,8 +43,7 @@ after setup). Phase 3 seat on probation: review after 60 days.
 only TCP 22 inbound → paste `cloud-init.yaml` into **Cloud config** → name
 `field-scout` → Create.
 
-**DigitalOcean:** Create Droplet → Ubuntu 24.04 (LTS) x64 → Basic, 2 GB/1 vCPU
-or larger → add your SSH key → **Advanced options → Add initialization
+**DigitalOcean:** Create Droplet → Ubuntu 24.04 (LTS) x64 → Basic, **4 GB/2 vCPU** (2 GB was too small: the CLI was OOM-killed, 2026-10-30) → add your SSH key → **Additional Options → Startup scripts (Free)** (called "Advanced options → Add initialization
 scripts (user data)** → paste `cloud-init.yaml` → hostname `field-scout`.
 Then Networking → Firewalls: allow only TCP 22 inbound, attach to the droplet.
 

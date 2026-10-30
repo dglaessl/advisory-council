@@ -70,7 +70,8 @@ write_files:
       {
         "no-new-privileges": true,
         "log-driver": "local",
-        "log-opts": { "max-size": "20m", "max-file": "3" }
+        "log-opts": { "max-size": "20m", "max-file": "3" },
+        "dns": ["1.1.1.1", "8.8.8.8"]
       }
 
   # Containers may reach the internet, but not private networks or the
@@ -245,6 +246,8 @@ write_files:
       exec sudo docker exec -it openclaw node dist/index.js "$@"
 
 runcmd:
+  # 2 GB swap: the OpenClaw CLI runs inside the gateway container and was OOM-killed (exit 137) on a 2 GB droplet (2026-10-30)
+  - '[ -e /swapfile ] || (fallocate -l 2G /swapfile && chmod 600 /swapfile && mkswap /swapfile && swapon /swapfile && echo "/swapfile none swap sw 0 0" >> /etc/fstab)'
   - mkdir -p /etc/openclaw /srv/openclaw/state/workspace /srv/openclaw/scout-inbox
   - chmod 700 /etc/openclaw
   - '[ -s /etc/openclaw/gateway.env ] || printf "OPENCLAW_GATEWAY_TOKEN=%s\n" "$(openssl rand -hex 32)" > /etc/openclaw/gateway.env'

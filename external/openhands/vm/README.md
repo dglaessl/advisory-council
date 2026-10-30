@@ -79,7 +79,7 @@ agent never holds the token, but a stolen token could still push to `main`.
 `cloud-init.yaml` into **Cloud config** → name `lead-engineer`.
 
 **DigitalOcean:** Droplet → Ubuntu 24.04 (LTS) x64 → 8 GB / 4 vCPU → your SSH
-key → **Advanced options → Add initialization scripts** → paste the file →
+key → **Additional Options → Startup scripts (Free)** → paste the file →
 then a Cloud Firewall allowing only TCP 22 inbound.
 
 Wait about 8 minutes (it builds the runner image on first boot).
