@@ -25,7 +25,7 @@ Only 10-30 and 10-31 ran under all the 10-29 rules. 10-28 predates the lock and 
 | Check B | no open orders, no trading lots | trivially satisfied; mismatch and replace paths untested |
 | Heat line | present on 10-30 and 10-31, both $0 | never exercised on a real entry |
 | UNRESOLVED | 0 uses, and no entries were placed | untested |
-| Check C signals | brk=Y in 0 of 14 days since 10-19 | consistent. BTC needs about +13% to reach hi55 |
+| Check C signals | brk=Y in 0 of 13 days since 10-19 | consistent. BTC needs about +13% to reach hi55 |
 | Stop exits | five fills within 0.03% of trigger, no collar slippage | good evidence, but a >5% gap is untested |
 
 **Anomalies:**
@@ -65,7 +65,7 @@ It adds `--heat` and 12-month statistics to `backtest.py`, and a table of 11 set
    - keep the 8% heat cap until January or revisit now (the Evaluator would not change it on this evidence)
 
 ## 6. Three questions for the Red Team
-1. With 0 signals in 14 days, 0 of 5 trades won, and a 30-closed-trade floor that cannot be reached by January, is the review decidable at all? What pre-registered outcome would you accept as "the active sleeve earns its keep", rather than a verdict by default?
+1. With 0 signals in 13 days, 0 of 5 trades won, and a 30-closed-trade floor that cannot be reached by January, is the review decidable at all? What pre-registered outcome would you accept as "the active sleeve earns its keep", rather than a verdict by default?
 2. The log times run ahead of the commits and the cycles take 26 to 54 s. How would you show the cycle reports checks it did not perform, and what independent evidence (transcripts, broker audit trail, tool-call counts) closes that?
 3. Attack the first 00:20 UTC market buy and the guard: on a volatile breakout night where the ask recheck passes but the fill lands +3% above mark, what is the loss against the 1% heat allowance? Does a 1.5% guard help or only skip the best setups?
 
