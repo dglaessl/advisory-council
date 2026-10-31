@@ -23,8 +23,8 @@ RUN python -m pip install -r requirements.txt -c constraints.txt \
 
 # bridge.py is the authority on envelope rules; copied in at build time so the
 # container needs no repo mount.
-COPY --from=bridge bridge.py /app/bridge/bridge.py
-COPY crews/ /app/crews/
+COPY --chmod=0644 --from=bridge bridge.py /app/bridge/bridge.py
+COPY --chmod=0755 crews/ /app/crews/
 
 # Unprivileged by default; run.sh also passes --user to match the host owner of /out.
 USER 10001:10001
