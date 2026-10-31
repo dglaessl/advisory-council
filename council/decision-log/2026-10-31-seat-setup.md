@@ -15,7 +15,7 @@
 - OpenClaw: `OPENCLAW_NO_RESPAWN=1`; `perplexity` added to `plugins.deny`.
 - CrewAI Dockerfile: `COPY --chmod` (host files with mode 0600 broke the container).
 - Goose README: `.gooseignore` does not cover the shell tool.
-- Confidential deck texts removed from the repo tree (`council/meetings/*-inputs/` and the Heartwood briefings are gitignored). **Open:** they are still in git history, which the Lead Engineer's token can read. Daniel decides whether to rewrite history or narrow the token.
+- Confidential third-party material removed from the repo tree (meeting inputs and item-4b briefings are gitignored). **Open:** they are still in git history, which the Lead Engineer's token can read. Daniel decides whether to rewrite history or narrow the token.
 
 ## Open items
 - Goose via "OpenRouter Login" created a new key without a cap. Daniel to set a $15 limit and delete the unused key.
