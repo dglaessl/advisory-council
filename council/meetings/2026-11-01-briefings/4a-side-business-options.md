@@ -86,6 +86,7 @@ All tests are validation only. No sales, entity or paid launch before the agreem
 If the terms are unclear, the cleanest path is a written carve-out from the employer for named projects. That is Daniel's decision; it involves contacting his employer.
 
 ## D5: "The council sits" (Daniel, 2026-10-31; Chair's write-up)
+**The full strategy paper is in Daniel's doc "The Council Sits — Product Strategy"** (https://claude.ai/artifact/NADogWpLhk1oDHf7yuVg8t). It supersedes the cadence below: the council now sits twice a day and answers within 24 hours of admission, and the prototype UI comes before the pilot.
 *Added after the Strategist's draft. It refines D2 and absorbs N3 as a possible first vertical. Competitive scan: `council/research/2026-10-31-council-product-landscape.md`.*
 
 **Scan summary (Research Analyst, medium confidence):**
