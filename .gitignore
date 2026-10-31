@@ -14,3 +14,7 @@ council/scout-inbox/*
 __pycache__/
 *.pyc
 .venv/
+
+# Strictly confidential third-party material: keep out of git (lead-engineer token can read the repo)
+council/meetings/*/briefings/5*-*.md
+evals/heartwood/
