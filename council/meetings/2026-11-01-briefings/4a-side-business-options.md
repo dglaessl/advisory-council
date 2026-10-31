@@ -125,6 +125,33 @@ If the terms are unclear, the cleanest path is a written carve-out from the empl
 - **Pass:** ≥ 3 of 5 would pay ≥ $500 for the next one, and ≤ 60 min of Daniel's time per engagement.
 - Daniel's own council, starting with tomorrow's meeting, is the first case study.
 
+## Broader brainstorm (Chair, 2026-10-31; for the council to extend)
+*Daniel asked for a wider field before narrowing. Each seat adds 2–3 avenues of its own at the meeting, then all are scored on the same scale. All of these are first ideas and none are checked yet.*
+
+Each avenue is listed by where it comes from. Each line gives the avenue, then the asset it builds on, then an early read on employment conflict.
+
+**Products from what Daniel already runs**
+- **E1 Council-in-a-box.** An open-source council kit with a paid setup-and-support tier. *Builds on* this council's repo and kits. *Conflict:* likely clear.
+- **E2 Agent skill packs for professions.** Ready-made skills and agents for one profession, e.g. clinics, studios or small law firms. *Builds on* the council's seat prompts and evals. *Conflict:* clear outside housing.
+- **E3 n = 1 analytics service for self-trackers.** A data audit, a pre-registered analysis and a written report, with no medical advice. *Builds on* the Longevity Ledger. *Conflict:* clear; health-claims rules apply.
+
+**Hospitality and lifestyle**
+- **E4 Curated "slow Tuscany" stays.** Packages of Casa La Fonte plus partners: cooking, yoga, riding. *Builds on* Casa La Fonte and its partner network. *Conflict:* clear.
+- **E5 Equestrian and stable management agent.** Bookings, feed, farrier and vet schedules for small stables. *Builds on* own horses and the stable relationship. *Conflict:* clear.
+- **E6 Pet-friendly travel guide and agent for DACH.** *Builds on* the dog-friendly positioning of Casa La Fonte. *Conflict:* clear.
+
+**Knowledge and teaching**
+- **E7 Paid newsletter, "Agents for experts".** Weekly build notes from running this council. *Builds on* the portfolio pieces and the AI Tutor log. *Conflict:* check the public-writing terms.
+- **E8 Talks and workshops on agentic product development**, outside housing. *Builds on* 20 years of product leadership. *Conflict:* check terms.
+- **E9 DACH–US bridge.** AI-prepared market-entry research for German Mittelstand firms entering the US, not housing. *Builds on* bilingual, three-country experience. *Conflict:* likely clear.
+
+**Services that become products**
+- **E10 AI-prepared expert-call briefs.** A cheaper alternative to an expert network for small investors. *Builds on* the research and verification seats. *Conflict:* clear, but no investment advice.
+- **E11 Personal "AI chief of staff" setup for executives.** Configure a small council for one person. *Builds on* this build-out. *Conflict:* likely clear; time-heavy at first.
+- **E12 Design-literacy agent for homeowners.** Help with briefing an architect or interior designer. *Builds on* architecture expertise. *Conflict:* **flag**, residential design sits near the employer's field.
+
+**What the council should add:** the Career & Offers Crew runs its mapping (AI-market scout → domain-fit → offer designer → pricing). Each Claude seat adds its own avenues. The Red Team names the one avenue it thinks everyone is underrating.
+
 ## Open questions for Daniel
 1. Which state's law governs the agreement, and is there an outside-activity approval clause or a schedule of prior inventions?
 2. When did the Casa La Fonte host-agent stack first exist? Before or after May 2026?
