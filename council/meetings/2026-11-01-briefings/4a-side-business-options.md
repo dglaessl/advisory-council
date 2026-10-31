@@ -86,7 +86,14 @@ All tests are validation only. No sales, entity or paid launch before the agreem
 If the terms are unclear, the cleanest path is a written carve-out from the employer for named projects. That is Daniel's decision; it involves contacting his employer.
 
 ## D5: "The council sits" (Daniel, 2026-10-31; Chair's write-up)
-*Added after the Strategist's draft. It refines D2 and absorbs N3 as a possible first vertical. Competitive scan: `council/research/2026-10-31-council-product-landscape.md` (in progress).*
+*Added after the Strategist's draft. It refines D2 and absorbs N3 as a possible first vertical. Competitive scan: `council/research/2026-10-31-council-product-landscape.md`.*
+
+**Scan summary (Research Analyst, medium confidence):**
+- **Multi-model "council" tools are crowded and cheap:** Suprmind ($19–195/month), SynthBoard (24 named advisors across model families), Perplexity Model Council (bundled), and "The AI Council" ($8.99).
+- **None has the whole package:** a scheduled sitting, formal minutes, recorded dissent, an intake that reshapes the question, and a published charter. That is the white space.
+- **Labor-illusion research covers waits of seconds, not days.** One study found slow algorithms were trusted *less*. The slow-cadence premise therefore has to be proven in the concierge test.
+- **Multi-agent debate often fails to beat self-consistency,** but different model families help. The Evaluator should benchmark the council against a single strong model, which doubles as marketing proof.
+- **Exclusions:** diagnosis or treatment, personalised legal opinions (incl. Germany's RDG), personalised investment advice, and doctor or lawyer personas.
 
 **Concept.** A deliberately slow, considered AI council for high-stakes questions. It is the opposite of instant chat.
 1. **Intake is the real work.** The customer brings a question or task and uploads materials. A guided intake helps them shape it into a question the council can act on: the decision, constraints, what "good" looks like, and the deadline. Only then is it **admitted to the agenda**.
@@ -103,7 +110,7 @@ If the terms are unclear, the cleanest path is a written carve-out from the empl
 
 | Fit | Market evidence | Time/week | Path to $10k/mo | Agent-driven | Defensibility | Conflict | Portfolio |
 |---|---|---|---|---|---|---|---|
-| 5 | 2 (pending the scan) | ~7 (3×20 min/day) | 3 | 4 | 3–4 (method + framework + intake) | Clear if housing and construction questions are excluded; IP check still applies | 5 |
+| 5 | 2 (crowded cheap tools; white space in intake + sitting + charter) | ~7 (3×20 min/day) | 3 | 4 | 3–4 (method + framework + intake) | Clear if housing and construction questions are excluded; IP check still applies | 5 |
 
 **Design requirements:**
 - **The delay must show up as a better answer.** That means a deliberation record, verified facts and ideally one human checkpoint. Otherwise it reads as a slower deep-research report.
