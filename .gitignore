@@ -16,5 +16,5 @@ __pycache__/
 .venv/
 
 # Strictly confidential third-party material: keep out of git (lead-engineer token can read the repo)
-council/meetings/*/briefings/5*-*.md
+council/meetings/*-briefings/5*.md
 evals/heartwood/
