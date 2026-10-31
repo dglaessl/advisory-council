@@ -142,6 +142,14 @@ class BridgeTest(unittest.TestCase):
         with self.assertRaises(self.b.EnvelopeError):
             self.b.reply("red-team", {"task_id": "../../probe", "status": "done", "output": "x"})
 
+    def test_task_id_with_path_traversal_rejected(self):
+        for tid in ["../2026-10-28-red-team-pilot-01",
+                    "2026-10-28-../../probe-01",
+                    "../../probe"]:
+            with self.subTest(task_id=tid), self.assertRaises(self.b.EnvelopeError) as cm:
+                self.b.validate(good_env(task_id=tid))
+            self.assertIn("task_id", str(cm.exception))
+
     def test_rt_cross_seat_reply_cannot_overwrite_dissent(self):
         self.b.send(good_env())
         self.b.claim("red-team")
