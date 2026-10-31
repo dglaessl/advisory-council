@@ -126,6 +126,9 @@ write_files:
             OPENCLAW_WORKSPACE_DIR: /home/node/.openclaw/workspace
             OPENCLAW_CONFIG_READONLY: "1"
             OPENCLAW_DISABLE_BONJOUR: "1"
+            # Restart in-process; without this the gateway exits 0 to hand off to a
+            # supervisor and Docker restarts it in a loop (seen 2026-10-31).
+            OPENCLAW_NO_RESPAWN: "1"
             TZ: UTC
           volumes:
             - /srv/openclaw/state:/home/node/.openclaw
@@ -178,7 +181,8 @@ write_files:
         },
         "plugins": {
           "deny": ["imap", "onepassword", "vault", "github", "telegram", "browser",
-                   "cua-computer", "linux-node", "file-transfer"]
+                   "cua-computer", "linux-node", "file-transfer",
+                   "perplexity"]
         },
         "security": {
           "installPolicy": {
