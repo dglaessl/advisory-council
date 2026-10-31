@@ -143,6 +143,13 @@ Move on only when, after ~4 weeks:
 **Phase 2:** OpenHands (Lead Engineer), Goose (Toolsmith).
 **Phase 3:** CrewAI panels, OpenClaw Field Scout (probation), optional Gemini 4.
 
+**Status 2026-10-31 (set up ahead of plan, ahead of the Phase 2 exit criteria; see
+`council/decision-log/2026-10-31-seat-setup.md`):**
+- **Live:** Lead Engineer (DigitalOcean `lead-engineer`), Strategy Panels (CrewAI, Docker on
+  Daniel's Mac, `~/council/kit`), Toolsmith (Goose 1.57.0 on the Mac, Sonnet 5.5, approve mode).
+- **Parked:** Field Scout. OpenClaw's startup maintenance loops; the service is disabled.
+- **Live since 2026-10-29:** Auditor (Gemini profile in Agent Zero).
+
 ---
 
 ### Alternative: Chair on your laptop, agents on the host
