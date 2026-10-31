@@ -85,6 +85,38 @@ All tests are validation only. No sales, entity or paid launch before the agreem
 4. **Confidentiality.** This draft uses no employer material.
 If the terms are unclear, the cleanest path is a written carve-out from the employer for named projects. That is Daniel's decision; it involves contacting his employer.
 
+## D5: "The council sits" (Daniel, 2026-10-31; Chair's write-up)
+*Added after the Strategist's draft. It refines D2 and absorbs N3 as a possible first vertical. Competitive scan: `council/research/2026-10-31-council-product-landscape.md` (in progress).*
+
+**Concept.** A deliberately slow, considered AI council for high-stakes questions. It is the opposite of instant chat.
+1. **Intake is the real work.** The customer brings a question or task and uploads materials. A guided intake helps them shape it into a question the council can act on: the decision, constraints, what "good" looks like, and the deadline. Only then is it **admitted to the agenda**.
+2. **Preparation with visible effort.** A team of agents is assigned to each question, mixing model families on purpose. The customer gets regular updates on what the council is working on ("the Red Team is testing your assumption on X"). This draws on the labor illusion: people value visible work.
+3. **The session.** The council meets on a fixed cadence, not instantly. It returns well-written **minutes** and a clear **response statement**, with confidence, recorded dissent and "what would change my mind".
+4. **A named, visual council.** Members have names and roles and appear visually, so the customer sees who argued what.
+5. **A published moral framework** based on Enlightenment principles adapted for today. It is a guarantee that certain principles are never violated.
+
+**Founder time:** about 3 × 20 min a day, prepared in advance by agents. That means the intake must be agent-driven, with Daniel reviewing only the final framing and the response statement. This fits the ≤ 1 h/day constraint.
+
+**Who pays:** people without a board who face infrequent, high-stakes decisions, such as founders, solo investors, family offices, executives facing a career move, and practice owners. The price is per engagement (roughly $500–5,000), not a subscription. 5–20 engagements a month would reach $10k a month.
+
+**Scores (Chair's view, same scale):**
+
+| Fit | Market evidence | Time/week | Path to $10k/mo | Agent-driven | Defensibility | Conflict | Portfolio |
+|---|---|---|---|---|---|---|---|
+| 5 | 2 (pending the scan) | ~7 (3×20 min/day) | 3 | 4 | 3–4 (method + framework + intake) | Clear if housing and construction questions are excluded; IP check still applies | 5 |
+
+**Design requirements:**
+- **The delay must show up as a better answer.** That means a deliberation record, verified facts and ideally one human checkpoint. Otherwise it reads as a slower deep-research report.
+- **Regulated advice:** a published boundary for medical, legal, financial and investment questions. Here the framework doubles as the scope statement.
+- **Out of scope:** questions about housing, homebuilding, prefab or construction tech, while Daniel is employed.
+
+**Test (4 weeks, concierge):**
+- 5 people outside housing with real decisions.
+- Intake shaped by hand from an agent draft, a council session, minutes and a response within 7 days.
+- Measure: willingness to pay, which part they valued most, and Daniel's minutes per engagement.
+- **Pass:** ≥ 3 of 5 would pay ≥ $500 for the next one, and ≤ 60 min of Daniel's time per engagement.
+- Daniel's own council, starting with tomorrow's meeting, is the first case study.
+
 ## Open questions for Daniel
 1. Which state's law governs the agreement, and is there an outside-activity approval clause or a schedule of prior inventions?
 2. When did the Casa La Fonte host-agent stack first exist? Before or after May 2026?
