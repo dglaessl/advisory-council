@@ -18,7 +18,7 @@
 - Confidential third-party material removed from the repo tree (meeting inputs and item-4b briefings are gitignored). **Open:** they are still in git history, which the Lead Engineer's token can read. Daniel decides whether to rewrite history or narrow the token.
 
 ## Open items
-- Goose via "OpenRouter Login" created a new key without a cap. Daniel to set a $15 limit and delete the unused key.
+- ~~Goose OAuth key without a cap~~: done per Daniel (2026-10-31): $15 cap set, unused key deleted.
 - Branch-protection ruleset for `main`, then smoke test 5.
-- Red Team security pass on the new seats (pending).
-- Rename the droplet `field-engineer` to `lead-engineer` in DigitalOcean.
+- Red Team security pass: done, see `council/engagements/2026-10-31-seat-security/REDTEAM.md`.
+- ~~Rename the droplet to `lead-engineer`~~: done per Daniel (2026-10-31).
